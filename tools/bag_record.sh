@@ -8,5 +8,5 @@ fi
 rosparam set /camera/aligned_depth_to_color/image_raw/compressed/format png
 rosparam set /camera/aligned_depth_to_color/image_raw/compressed/png_level 6
 
-rosbag record /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed -o $1
+rosbag record /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan -o $1
 
