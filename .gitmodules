@@ -1,0 +1,15 @@
+[submodule "color_detector"]
+	path = color_detector
+	url = https://github.com/RenFukatsu/color_detector.git
+[submodule "theta_s_ros"]
+	path = theta_s_ros
+	url = https://github.com/RenFukatsu/theta_s_ros.git
+[submodule "Roomba"]
+	path = Roomba
+	url = https://github.com/amslabtech/Roomba
+[submodule "roomba_dynamixel_tools"]
+	path = roomba_dynamixel_tools
+	url = https://github.com/TakuKarasawa/roomba_dynamixel_tools
+[submodule "dynamixel-workbench"]
+	path = dynamixel-workbench
+	url = https://github.com/TakuKarasawa/dynamixel-workbench.git
