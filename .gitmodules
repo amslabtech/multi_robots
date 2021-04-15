@@ -16,3 +16,6 @@
 [submodule "dynamixel-workbench-msgs"]
 	path = dynamixel-workbench-msgs
 	url = https://github.com/TakuKarasawa/dynamixel-workbench-msgs.git
+[submodule "DynamixelSDK"]
+	path = DynamixelSDK
+	url = https://github.com/ROBOTIS-GIT/DynamixelSDK.git
