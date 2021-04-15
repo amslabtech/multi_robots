@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- theta s -->
+    <include file="$(find theta_s_ros)/launch/theta_s_ros.launch" />
+
+    <!-- realsense d455 -->
+    <param name="/camera/aligned_depth_to_color/image_raw/compressed/format" value="png" />
+    <param name="/camera/aligned_depth_to_color/image_raw/compressed/png_level" value="5" />
+    <include file="$(find realsense2_camera rs_rgbd.launch">
+        <param name="filters" value="disparity,temporal" />
+    </include>
+
+    <!-- roomba -->
+    <node name="roomba_500driver_meiji" pkg="roomba_500driver_meiji" type="main500" >
+        <param name="serial_port" value="/dev/ttyUSB0" />
+        <param name="publish_intensity" value="true" />
+        <param name="publish_multiecho" value="false" />
+    </node>
+
+    <!-- hokuyo LiDAR -->
+    <node name="urg_node" pkg="urg_node" type="urg_node" >
+        <param name="ip_address" value="" />
+        <param name="serial_port" value="/dev/ttyACM0" />
+        <param name="publish_intensity" value="true" />
+        <param name="publish_multiecho" value="false" />
+    </node>
+
+</launch>
