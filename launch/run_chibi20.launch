@@ -21,5 +21,5 @@
         <param name="search_range_time" value="6.0" type="double"/>
     </node>
 
-    <node pkg="rosbag" type="record" name="rosbag_record" args="record /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan -o $(arg bagfile)" />
+    <node pkg="rosbag" type="record" name="rosbag_record" args="record -o /home/amsl/$(arg bagfile) /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan" />
 </launch>
