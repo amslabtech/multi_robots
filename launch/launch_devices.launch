@@ -5,7 +5,7 @@
 
     <!-- dynamixel -->
     <arg name="usb_port" default="/dev/ttyUSB1" />
-    <include file="$(find dynamixel_workbench_controller)/launch/roomba_joint.launch" >
+    <include file="$(find dynamixel_workbench_controllers)/launch/roomba_joint.launch" >
         <arg name="usb_port" default="$(arg usb_port)" />
     </include>
     <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
