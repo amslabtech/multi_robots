@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <include file="./launch_devices.launch" />
+
     <arg name="map_file" default="$(find chibi20_2)/mapdata/chibi20_2_dkan7.yaml"/>
     <node pkg="map_server" type="map_server" name="global_map"  args="$(arg map_file)"/>
 
