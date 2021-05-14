@@ -3,7 +3,6 @@ project(multi_robots_tf)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
-  roomba_500driver_meiji
   roscpp
   sensor_msgs
   std_msgs
@@ -20,5 +19,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(static_tf2_broadcaster src/static_tf2_broadcaster.cpp)
-target_link_libraries(static_tf2_broadcaster ${catkin_LIBRARIES})
+add_executable(static_roomba_tf2_broadcaster src/static_roomba_tf2_broadcaster.cpp)
+target_link_libraries(static_roomba_tf2_broadcaster ${catkin_LIBRARIES})
+
+add_executable(roomba_tf2_broadcaster src/roomba_tf2_broadcaster.cpp)
+target_link_libraries(roomba_tf2_broadcaster ${catkin_LIBRARIES})

@@ -1,4 +1,4 @@
-#include "multi_robots_tf/static_tf2_broadcaster.h"
+#include "multi_robots_tf/static_roomba_tf2_broadcaster.h"
 
 namespace multi_robots {
 StaticTf2Broadcaster::StaticTf2Broadcaster() : private_nh("~") {
@@ -66,7 +66,7 @@ void StaticTf2Broadcaster::process() {
 }  // namespace multi_robots
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "multi_robots_static_tf2_broadcaster");
+    ros::init(argc, argv, "static_roomba_tf2_broadcaster");
     multi_robots::StaticTf2Broadcaster static_tf2_broadcaster;
     static_tf2_broadcaster.process();
     return 0;

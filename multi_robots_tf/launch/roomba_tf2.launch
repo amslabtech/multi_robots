@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="multi_robots_tf" type="static_roomba_tf2_broadcaster" name="static_roomba_tf2_broadcaster" output="screen">
+        <rosparam command="load" file="$(find multi_robots_tf)/config/static_tf.yaml" />
+    </node>
+    <node pkg="multi_robots_tf" type="roomba_tf2_broadcaster" name="roomba_tf2_broadcaster" output="screen">
+    </node>
+</launch>

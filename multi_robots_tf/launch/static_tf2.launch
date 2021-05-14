@@ -1,5 +1,0 @@
-<launch>
-    <node pkg="multi_robots_tf" type="static_tf2_broadcaster" name="static_tf2_broadcaster" output="screen">
-        <rosparam command="load" file="$(find multi_robots_tf)/config/static_tf.yaml" />
-    </node>
-</launch>

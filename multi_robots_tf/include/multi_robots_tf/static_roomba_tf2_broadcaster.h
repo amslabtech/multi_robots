@@ -1,12 +1,10 @@
-#ifndef MULTI_ROBOTS_TF_STATIC_TF2_BROADCASTER_H_
-#define MULTI_ROBOTS_TF_STATIC_TF2_BROADCASTER_H_
+#ifndef MULTI_ROBOTS_TF_STATIC_ROOMBA_TF2_BROADCASTER_H_
+#define MULTI_ROBOTS_TF_STATIC_ROOMBA_TF2_BROADCASTER_H_
+
 #include <geometry_msgs/TransformStamped.h>
-#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/static_transform_broadcaster.h>
-
-#include <cstdio>
 
 namespace multi_robots {
 class StaticTf2Broadcaster {
@@ -50,4 +48,4 @@ class StaticTf2Broadcaster {
                                                                 double yaw);
 };
 }  // namespace multi_robots
-#endif  // MULTI_ROBOTS_TF_STATIC_TF2_BROADCASTER_H_
+#endif  // MULTI_ROBOTS_TF_STATIC_ROOMBA_TF2_BROADCASTER_H_
