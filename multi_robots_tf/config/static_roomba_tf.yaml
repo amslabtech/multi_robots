@@ -1,7 +1,3 @@
-base_link_frame_id: base_link
-lidar_frame_id: scan
-thetas_frame_id: theta_s
-realsense_frame_id: realsense
 lidar_x: 0.0
 lidar_y: 0.0
 lidar_z: 0.230

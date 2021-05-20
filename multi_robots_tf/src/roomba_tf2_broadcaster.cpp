@@ -2,13 +2,17 @@
 
 namespace multi_robots {
 RoombaTf2Broadcaster::RoombaTf2Broadcaster() : private_nh("~") {
-    odom_sub = nh.subscribe("/roomba/odometry", 1, &RoombaTf2Broadcaster::odom_callback, this);
+    odom_sub = nh.subscribe("roomba/odometry", 1, &RoombaTf2Broadcaster::odom_callback, this);
+
+    private_nh.param("odom_frame_id", odom_frame_id, std::string("odom"));
+    private_nh.param("base_link_frame_id", base_link_frame_id, std::string("base_link"));
 }
 
 void RoombaTf2Broadcaster::odom_callback(const nav_msgs::OdometryConstPtr &odom) {
     geometry_msgs::TransformStamped odom_trans;
     odom_trans.header = odom->header;
-    odom_trans.child_frame_id = "base_link";
+    odom_trans.header.frame_id = odom_frame_id;
+    odom_trans.child_frame_id = base_link_frame_id;
 
     odom_trans.transform.translation.x = odom->pose.pose.position.x;
     odom_trans.transform.translation.y = odom->pose.pose.position.y;

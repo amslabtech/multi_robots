@@ -17,6 +17,8 @@ class RoombaTf2Broadcaster {
     ros::NodeHandle private_nh;
     ros::Subscriber odom_sub;
     tf2_ros::TransformBroadcaster broadcaster;
+    std::string odom_frame_id;
+    std::string base_link_frame_id;
 
     void odom_callback(const nav_msgs::OdometryConstPtr &odom);
 };
