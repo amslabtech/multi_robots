@@ -58,9 +58,15 @@ geometry_msgs::TransformStamped StaticTf2Broadcaster::create_transformStamped_ms
 }
 
 void StaticTf2Broadcaster::process() {
-    static_broadcaster.sendTransform(lidar_transformStamped);
-    static_broadcaster.sendTransform(thetas_transformStamped);
-    static_broadcaster.sendTransform(realsense_transformStamped);
+    static_broadcaster.sendTransform({
+        lidar_transformStamped,
+        thetas_transformStamped,
+        realsense_transformStamped
+    });
+    ROS_INFO_STREAM("Spinning until killed publishing");
+    ROS_INFO_STREAM("    " << base_link_frame_id << " to " << lidar_frame_id);
+    ROS_INFO_STREAM("    " << base_link_frame_id << " to " << thetas_frame_id);
+    ROS_INFO_STREAM("    " << base_link_frame_id << " to " << realsense_frame_id);
     ros::spin();
 }
 }  // namespace multi_robots
