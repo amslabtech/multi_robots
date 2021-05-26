@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="use_sim_time" value="true" />
+
+    <arg name="bag_dir" default="/home/amsl/bagfiles/roomba/six_roomba_20210429/replace_ns_bagfiles" />
+    <arg name="bag_command" default="$(arg bag_dir)/roomba1.bag $(arg bag_dir)/roomba2.bag $(arg bag_dir)/roomba3.bag $(arg bag_dir)/roomba4.bag $(arg bag_dir)/roomba5.bag $(arg bag_dir)/roomba6.bag" />
+    <arg name="target_bag_dir" default="/home/amsl/bagfiles/roomba/six_roomba_20210429/target_pos" />
+    <arg name="target_bag_command" default="$(arg target_bag_dir)/roomba23.bag $(arg target_bag_dir)/roomba456.bag" />
+
+    <arg name="bag_option" default="--clock" />
+    <node pkg="rosbag" type="play" name="rosbag_play" args="$(arg bag_command) $(arg target_bag_command) $(arg bag_option)" required="true" />
+
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+    <arg name="amcl_config" default="$(find roomba_visualizer)/config/amcl.yaml" />
+    <arg name="rviz_config" default="$(find roomba_visualizer)/rviz/amcl.rviz" />
+
+    <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+    <group ns="roomba1" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba1" />
+        </include>
+    </group>
+    <group ns="roomba2" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba2" />
+        </include>
+    </group>
+    <group ns="roomba3" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba3" />
+        </include>
+    </group>
+    <group ns="roomba4" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba4" />
+        </include>
+    </group>
+    <group ns="roomba5" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba5" />
+        </include>
+    </group>
+    <group ns="roomba6" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba6" />
+        </include>
+    </group>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" />
+
+</launch>
