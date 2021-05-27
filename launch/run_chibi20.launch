@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="bagfile" default="roomba.bag" />
+    <!-- <arg name="bagfile" default="roomba.bag" /> -->
 
     <node pkg="chibi20_2" type="local_path_planner" name="local_path_planner" output="screen">
         <param name="hz" value="10" type="int"/>
@@ -21,5 +21,5 @@
         <param name="search_range_time" value="6.0" type="double"/>
     </node>
 
-    <node pkg="rosbag" type="record" name="rosbag_record" args="record -o /home/amsl/$(arg bagfile) /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan" />
+    <!-- <node pkg="rosbag" type="record" name="rosbag_record" args="record &#45;o /home/amsl/$(arg bagfile) /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan" /> -->
 </launch>

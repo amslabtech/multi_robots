@@ -3,15 +3,15 @@
     <!-- theta s -->
     <include file="$(find color_detector)/launch/run_color_detector_node.launch" />
 
-    <!-- dynamixel -->
-    <arg name="usb_port" default="/dev/ttyUSB1" />
-    <include file="$(find dynamixel_workbench_controllers)/launch/roomba_joint.launch" >
-        <arg name="usb_port" default="$(arg usb_port)" />
-    </include>
-    <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
-        <param name="execution_time" value="0.2" type="double" />
-        <param name="offset_angle" value="0.00" type="double" />
-    </node>
+    <!-- <!&#45;&#45; dynamixel &#45;&#45;> -->
+    <!-- <arg name="usb_port" default="/dev/ttyUSB1" /> -->
+    <!-- <include file="$(find dynamixel_workbench_controllers)/launch/roomba_joint.launch" > -->
+    <!--     <arg name="usb_port" default="$(arg usb_port)" /> -->
+    <!-- </include> -->
+    <!-- <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" > -->
+    <!--     <param name="execution_time" value="0.2" type="double" /> -->
+    <!--     <param name="offset_angle" value="0.00" type="double" /> -->
+    <!-- </node> -->
 
     <!-- realsense d455 -->
     <param name="/camera/aligned_depth_to_color/image_raw/compressed/format" value="png" />

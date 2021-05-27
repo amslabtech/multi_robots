@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- realsense d455 -->
+    <!-- <param name="/camera/aligned_depth_to_color/image_raw/compressed/format" value="png" /> -->
+    <!-- <param name="/camera/aligned_depth_to_color/image_raw/compressed/png_level" value="5" /> -->
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
+        <param name="filters" value="disparity,temporal" />
+    </include>
+</launch>
