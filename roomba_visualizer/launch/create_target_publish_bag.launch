@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="use_sim_time" value="true" />
+
+    <arg name="bag_dir" default="/home/amsl/bagfiles/roomba/six_roomba_20210429/replace_ns_bagfiles" />
+    <arg name="bag_command" default="$(arg bag_dir)/roomba1.bag $(arg bag_dir)/roomba2.bag $(arg bag_dir)/roomba3.bag $(arg bag_dir)/roomba4.bag $(arg bag_dir)/roomba5.bag $(arg bag_dir)/roomba6.bag" />
+
+    <arg name="bag_option" default="--clock" />
+    <node pkg="rosbag" type="play" name="rosbag_play" args="$(arg bag_command) $(arg bag_option)" required="true" />
+
+    <group ns="roomba2" >
+        <include file="$(find color_detector)/launch/run_color_detector_node.launch" >
+            <arg name="is_bag" default="true" />
+            <arg name="use_colors" default="green" />
+        </include>
+    </group>
+    <group ns="roomba3" >
+        <include file="$(find color_detector)/launch/run_color_detector_node.launch" >
+            <arg name="is_bag" default="true" />
+            <arg name="use_colors" default="yellow" />
+        </include>
+    </group>
+    <group ns="roomba4" >
+        <include file="$(find color_detector)/launch/run_color_detector_node.launch" >
+            <arg name="is_bag" default="true" />
+            <arg name="use_colors" default="blue" />
+        </include>
+    </group>
+    <group ns="roomba5" >
+        <include file="$(find color_detector)/launch/run_color_detector_node.launch" >
+            <arg name="is_bag" default="true" />
+            <arg name="use_colors" default="orange" />
+        </include>
+    </group>
+    <group ns="roomba6" >
+        <include file="$(find color_detector)/launch/run_color_detector_node.launch" >
+            <arg name="is_bag" default="true" />
+            <arg name="use_colors" default="purple" />
+        </include>
+    </group>
+
+</launch>

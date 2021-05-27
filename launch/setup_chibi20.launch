@@ -19,10 +19,6 @@
 
     <node pkg="chibi20_2" type="local_map_creator" name="local_map_creator" output="screen"/>
 
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find chibi20_2)/config/simulate.rviz"/>
-
-    <node pkg="rviz" type="rviz" name="rviz2" args="-d $(find chibi20_2)/config/simulate2.rviz"/>
-
     <node pkg="rosbag" type="record" name="rosbag_record" args="record -o /home/amsl/$(arg bagfile) /camera/aligned_depth_to_color/image_raw/compressed /camera/color/camera_info /camera/color/image_rect_color/compressed /theta_s/image_raw/compressed /roomba/odometry /scan" />
 
 </launch>
