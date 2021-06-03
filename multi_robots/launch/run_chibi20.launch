@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <!-- <arg name="bagfile" default="roomba.bag" /> -->
-
     <node pkg="chibi20_2" type="local_path_planner" name="local_path_planner" output="screen">
         <param name="hz" value="10" type="int"/>
         <param name="max_linear_velocity" value="0.5" type="double"/>
