@@ -38,6 +38,10 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
     }
 
     for (size_t i = 0; i < msg->ranges.size(); i++) {
+        if(counter == 4){
+           counter = 5;
+           break;
+        }
         if (scan_data.ranges[i] < dist && !f) {
             f = true;
             ROS_INFO_STREAM("from " << counter << ", " << i);
