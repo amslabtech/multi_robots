@@ -131,7 +131,12 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
           scan_data.ranges[i] = scan_ranges_buffer[i];
           scan_data.intensities[i] = scan_intensities_buffer[i];
        }
-       ROS_INFO_STREAM("Error");
+       if(counter > 4){
+          ROS_WARN_STREAM("Counter error");
+       }
+       if(pole_max_idx[0] >= pole_min_idx[1]){
+          ROS_WARN_STREAM("Pole detection error");
+       }
     }
 
     ROS_INFO_STREAM("Received");
