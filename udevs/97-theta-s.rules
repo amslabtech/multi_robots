@@ -1,1 +1,0 @@
-SUBSYSTEMS=="usb", ATTR{idVendor}=="05ca", ATTR{idProduct}=="2711", MODE="666", GROUP="usb" 

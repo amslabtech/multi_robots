@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="use_sim_time" value="true" />
+
+    <arg name="bag_dir" default="/home/amsl/bagfiles/roomba/six_roomba_20210513/replace_ns_bagfiles" />
+    <arg name="bag_command" default="$(arg bag_dir)/roomba1.bag $(arg bag_dir)/roomba2.bag $(arg bag_dir)/roomba3.bag $(arg bag_dir)/roomba4.bag $(arg bag_dir)/roomba5.bag $(arg bag_dir)/roomba6.bag" />
+    <arg name="target_bag_dir" default="/home/amsl/bagfiles/roomba/six_roomba_20210513/target_pos" />
+    <arg name="target_bag_command" default="$(arg target_bag_dir)/roomba23.bag $(arg target_bag_dir)/roomba456.bag" />
+
+    <arg name="bag_option" default="--clock" />
+    <node pkg="rosbag" type="play" name="rosbag_play" args="$(arg bag_command) $(arg target_bag_command) $(arg bag_option)" required="true" />
+
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+    <arg name="amcl_config" default="$(find roomba_visualizer)/config/amcl.yaml" />
+    <arg name="rviz_config" default="$(find roomba_visualizer)/rviz/amcl.rviz" />
+
+    <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+    <group ns="roomba1" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba1" />
+        </include>
+    </group>
+    <group ns="roomba2" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba2" />
+        </include>
+        <node pkg="roomba_visualizer" type="pose_diff_node" name="pose_diff">
+            <param name="BACK_ROOMBA" value="roomba2" />
+            <remap from="forward/amcl_pose" to="/roomba1/amcl_pose" />
+            <remap from="back/amcl_pose" to="/roomba2/amcl_pose" />
+            <remap from="target/position" to="/roomba2/target/position" />
+        </node>
+    </group>
+    <group ns="roomba3" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba3" />
+        </include>
+        <node pkg="roomba_visualizer" type="pose_diff_node" name="pose_diff" >
+            <param name="BACK_ROOMBA" value="roomba3" />
+            <remap from="forward/amcl_pose" to="/roomba2/amcl_pose" />
+            <remap from="back/amcl_pose" to="/roomba3/amcl_pose" />
+            <remap from="target/position" to="/roomba3/target/position" />
+        </node>
+    </group>
+    <group ns="roomba4" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba4" />
+        </include>
+        <node pkg="roomba_visualizer" type="pose_diff_node" name="pose_diff" >
+            <param name="BACK_ROOMBA" value="roomba4" />
+            <remap from="forward/amcl_pose" to="/roomba3/amcl_pose" />
+            <remap from="back/amcl_pose" to="/roomba4/amcl_pose" />
+            <remap from="target/position" to="/roomba4/target/position" />
+        </node>
+    </group>
+    <group ns="roomba5" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba5" />
+        </include>
+        <node pkg="roomba_visualizer" type="pose_diff_node" name="pose_diff" >
+            <param name="BACK_ROOMBA" value="roomba5" />
+            <remap from="forward/amcl_pose" to="/roomba4/amcl_pose" />
+            <remap from="back/amcl_pose" to="/roomba5/amcl_pose" />
+            <remap from="target/position" to="/roomba5/target/position" />
+        </node>
+    </group>
+    <group ns="roomba6" >
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="roomba6" />
+        </include>
+        <node pkg="roomba_visualizer" type="pose_diff_node" name="pose_diff" >
+            <param name="BACK_ROOMBA" value="roomba6" />
+            <remap from="forward/amcl_pose" to="/roomba5/amcl_pose" />
+            <remap from="back/amcl_pose" to="/roomba6/amcl_pose" />
+            <remap from="target/position" to="/roomba6/target/position" />
+        </node>
+    </group>
+
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" /> -->
+
+</launch>
