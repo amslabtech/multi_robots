@@ -8,6 +8,7 @@ Pole_Eliminator::Pole_Eliminator():private_nh("~")
     private_nh.param("height",height,{5});
     private_nh.param("resolution",resolution,{0.05});
     private_nh.param("radius_limit",radius_limit,{49});
+    private_nh.param("laser_frame_id",laser_frame_id,std::string("laser"));
 
     //subscriber
     sub_laser_scan = nh.subscribe("scan",10,&Pole_Eliminator::laser_scan_callback,this);
@@ -19,6 +20,7 @@ Pole_Eliminator::Pole_Eliminator():private_nh("~")
 void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     scan_data = *msg;
+    scan_data.header.frame_id = laser_frame_id;
     ROS_INFO_STREAM("recieved data size : " << msg->ranges.size());
     bool f = false;
     double dist = 0.30;
@@ -83,11 +85,11 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
         for(size_t i=0;i<msg->ranges.size();i++){
             if(pole_min_idx[counter] <= i && i <= pole_max_idx[counter]){
                 b=(point_min[1]-point_max[1])/(point_min[0]-point_max[0]);
-                c=(point_max[0]*point_min[1]-point_min[0]*point_max[1])/(point_max[0]-point_min[0]);    
+                c=(point_max[0]*point_min[1]-point_min[0]*point_max[1])/(point_max[0]-point_min[0]);
                 if(-45.0+i*0.25 == 0.0 || -45.0+i*0.25 == 180.0){
                     cross_point[0] = -c/b;
                     cross_point[1] = 0.0;
-                }else if(-45.0+i*0.25 == 90.0 || -45.0+i*0.25 == 270.0){            
+                }else if(-45.0+i*0.25 == 90.0 || -45.0+i*0.25 == 270.0){
                     cross_point[0] = 0.0;
                     cross_point[1] = c;
                 }else{
@@ -96,7 +98,7 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
                     cross_point[0] = c/(a-b);
                     cross_point[1] = a*c/(a-b);
                 }
-            
+
                 //ROS_INFO_STREAM("cross_point " << cross_point[0] << ", " << cross_point[1]);
                 if(counter == 0){
                     scan_data.ranges[i] = scan_data.ranges[pole_max_idx[counter]];
@@ -106,12 +108,12 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
                     scan_data.intensities[i] = scan_data.intensities[pole_min_idx[counter]];
                 }else{
                     scan_data.ranges[i] = sqrt(pow(cross_point[0],2.0)+pow(cross_point[1],2.0));
-                    scan_data.intensities[i] = scan_data.intensities[pole_min_idx[counter]];       
+                    scan_data.intensities[i] = scan_data.intensities[pole_min_idx[counter]];
                 }
-            
+
                 //ROS_INFO_STREAM("Log a b c " << a << ", " << b << ", " << c);
                 ROS_INFO_STREAM("scan_data.ranges " << scan_data.ranges[i]);
-            
+
             }else if(pole_max_idx[counter] < i){
                 counter++;
                 point_min[0] = scan_data.ranges[pole_min_idx[counter]]*cos((-45.0+pole_min_idx[counter]*0.25)*M_PI/180.0);
@@ -146,7 +148,7 @@ void Pole_Eliminator::process()
     while(ros::ok())
     {
         // add_frame_local_map();
-        ros::spin();
+        ros::spinOnce();
         loop_rate.sleep();
     }
 }
