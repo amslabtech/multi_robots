@@ -3,7 +3,7 @@
 Pole_Eliminator::Pole_Eliminator():private_nh("~")
 {
     //parameter
-    private_nh.param("hz",hz,{1});
+    private_nh.param("hz",hz,{40});
     private_nh.param("width",width,{5});
     private_nh.param("height",height,{5});
     private_nh.param("resolution",resolution,{0.05});
@@ -11,7 +11,7 @@ Pole_Eliminator::Pole_Eliminator():private_nh("~")
     private_nh.param("laser_frame_id",laser_frame_id,std::string("laser"));
 
     //subscriber
-    sub_laser_scan = nh.subscribe("scan",10,&Pole_Eliminator::laser_scan_callback,this);
+    sub_laser_scan = nh.subscribe("scan",10, &Pole_Eliminator::laser_scan_callback,this);
     //publisher
     pub_laser_scan = nh.advertise<sensor_msgs::LaserScan>("corrected_scan", 10);
 }
@@ -154,7 +154,7 @@ void Pole_Eliminator::process()
     ros::Rate loop_rate(hz);
     while(ros::ok())
     {
-        ros::spin();
+        ros::spinOnce();
         loop_rate.sleep();
     }
 }
