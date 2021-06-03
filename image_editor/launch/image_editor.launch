@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="multi_robots" type="theta_s_ros" name="theta_s_ros" output = "screen"/>
+    <node pkg="image_editor" type="image_editor" name="image_editor" output = "screen"/>
+</launch>
+
