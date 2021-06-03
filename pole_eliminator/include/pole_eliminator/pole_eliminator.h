@@ -26,6 +26,7 @@ class Pole_Eliminator
     int pole_min_idx[4];
     int pole_max_idx[4];
     bool is_edge;
+    std::string laser_frame_id;
 
     //member
     ros::NodeHandle nh;
