@@ -3,8 +3,8 @@
     <arg name="amcl_config" default="$(find roomba_visualizer)/config/amcl.yaml" />
     <arg name="roomba" default="roomba" />
 
-    <node pkg="pole_eliminator" type="pole_eliminator_node" name="pole_eliminator" >
-        <param name="LASER_FRAME_ID" value="$(arg roomba)/laser" />
+    <node pkg="pole_eliminator" type="pole_eliminator" name="pole_eliminator" >
+        <param name="laser_frame_id" value="$(arg roomba)/laser" />
     </node>
     <node pkg="multi_robots_tf" type="static_roomba_tf2_broadcaster" name="static_roomba_tf2_broadcaster" >
         <param name="base_link_frame_id" value="$(arg roomba)/base_link" />
@@ -17,7 +17,7 @@
         <param name="odom_frame_id" value="$(arg roomba)/odom" />
         <param name="base_link_frame_id" value="$(arg roomba)/base_link" />
     </node>
-    <node pkg="amcl" type="amcl" name="amcl" output="screen" >
+    <node pkg="amcl" type="amcl" name="amcl" >
         <rosparam command="load" file="$(arg amcl_config)" />
         <param name="base_frame_id" value="$(arg roomba)/base_link" />
         <param name="odom_frame_id" value="$(arg roomba)/odom" />

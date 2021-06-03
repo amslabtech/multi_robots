@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf2
   tf2_ros
+  tf2_geometry_msgs
   visualization_msgs
   message_filters
 )
@@ -22,6 +23,11 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+)
+
+add_executable(pose_diff_node src/pose_diff_calculator.cpp)
+target_link_libraries(pose_diff_node
+  ${catkin_LIBRARIES}
 )
 
 add_executable(${PROJECT_NAME}_node src/roomba_visualizer.cpp)
