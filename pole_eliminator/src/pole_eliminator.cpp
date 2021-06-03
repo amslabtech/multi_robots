@@ -41,7 +41,9 @@ void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr
 
     for (size_t i = 0; i < msg->ranges.size(); i++) {
         if(counter == 4){
-           counter = 5;
+           if(i < 1000){
+              counter = 5;
+           }
            break;
         }
         if (scan_data.ranges[i] < dist && !f) {
@@ -152,8 +154,7 @@ void Pole_Eliminator::process()
     ros::Rate loop_rate(hz);
     while(ros::ok())
     {
-        // add_frame_local_map();
-        ros::spinOnce();
+        ros::spin();
         loop_rate.sleep();
     }
 }
