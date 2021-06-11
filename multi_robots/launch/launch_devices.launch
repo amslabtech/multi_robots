@@ -2,6 +2,7 @@
 <launch>
     <arg name="external_manager" default="false" />
     <arg name="manager" default="devices_manager" />
+    <arg name="roomba" default="roomba1" />
 
     <node unless="$(arg external_manager)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
     <!-- theta s -->
