@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="external_manager" default="false" />
+    <arg name="manager" default="republish_manager" />
+
+    <node name="theta_s_republish" pkg="image_transport" type="republish" args="compressed raw">
+        <remap from="in" to="theta_s/image_raw" />
+        <remap from="out" to="theta_s/image_raw" />
+    </node>
+
+    <node name="depth_republish" pkg="image_transport" type="republish" args="compressed raw">
+        <remap from="in" to="camera/aligned_depth_to_color/image_raw" />
+        <remap from="out" to="camera/aligned_depth_to_color/image_raw" />
+    </node>
+
+    <node name="color_republish" pkg="image_transport" type="republish" args="compressed raw">
+        <remap from="in" to="camera/color/image_rect_color" />
+        <remap from="out" to="camera/color/image_rect_color" />
+    </node>
+
+    <node unless="$(arg external_manager)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+    <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb $(arg manager)">
+        <remap from="rgb/camera_info" to="camera/color/camera_info" />
+        <remap from="rgb/image_rect_color" to="camera/color/image_rect_color" />
+        <remap from="depth_registered/image_rect" to="camera/aligned_depth_to_color/image_raw" />
+        <remap from="depth_registered/points" to="camera/depth_registered/points" />
+    </node>
+</launch>

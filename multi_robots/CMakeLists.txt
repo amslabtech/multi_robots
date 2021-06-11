@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   roomba_500driver_meiji
   roomba_dynamixel_controller
   urg_node
+  image_editor
 )
 
 ## System dependencies are found with CMake's conventions

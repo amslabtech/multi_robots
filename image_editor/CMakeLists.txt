@@ -3,11 +3,19 @@ project(image_editor)
 
 find_package(catkin REQUIRED COMPONENTS
     roscpp
+    rospy
     sensor_msgs
     geometry_msgs
     std_msgs
     image_transport
     cv_bridge
+    dynamic_reconfigure
+    nodelet
+    pluginlib
+)
+
+generate_dynamic_reconfigure_options(
+    cfg/Parameter.cfg
 )
 
 catkin_package(
@@ -22,5 +30,8 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(image_editor src/image_editor.cpp)
-target_link_libraries(image_editor ${catkin_LIBRARIES})
+add_library(${PROJECT_NAME} src/image_editor_nodelet.cpp src/image_editor.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(${PROJECT_NAME}_node src/image_editor.cpp src/image_editor_node.cpp)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})

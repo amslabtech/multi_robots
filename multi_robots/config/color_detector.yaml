@@ -1,0 +1,12 @@
+# for point_cloud_color_detector
+TOLERANCE: 0.2
+HIGHEST_TARGET_Y: 0.70
+LOWEREST_TARGET_Y: 0.00
+
+# for image_color_detector
+
+# for both
+MIN_CLUSTER_SIZE: 10
+MAX_CLUSTER_SIZE: 500
+ONLY_PUBLISH_MASK_POINTS: false
+PUBLISH_TARGET_POINTS: true

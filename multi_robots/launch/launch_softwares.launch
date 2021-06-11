@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="external_manager" default="false" />
+    <arg name="manager" default="softwares_manager" />
+    <arg name="roomba" default="roomba1" />
+    <arg name="use_colors" default="" />
+
+    <node unless="$(arg external_manager)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+    <node pkg="nodelet" type="nodelet" name="theta_s_converter" args="load theta_s_ros/image_converter_nodelet $(arg manager)">
+        <remap from="camera/image_raw" to="theta_s/image_raw" />
+        <remap from="equirectangular/image_raw" to="equirectangular/image_raw" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="image_editor_nodelet" args="load image_editor/image_editor_nodelet $(arg manager)">
+        <param name="roomba" value="$(arg roomba)" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_editor.yaml" />
+        <remap from="camera/image_raw" to="theta_s/image_raw" />
+        <remap from="equirectangular/image_raw" to="equirectangular/image_raw" />
+        <remap from="equirectangular/cv_image_edited" to="equirectangular/corrected/image_raw" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="color_detector" args="load color_detector/color_detector_nodelet $(arg manager)">
+        <rosparam command="load" file="$(find multi_robots)/config/hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/color_detector.yaml" />
+        <remap from="equirectangular/image_raw" to="equirectangular/corrected/image_raw" />
+        <param name="USE_COLORS" value="$(arg use_colors)" />
+    </node>
+</launch>

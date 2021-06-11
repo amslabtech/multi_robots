@@ -15,13 +15,17 @@ class ImageEditor
 {
     public:
         ImageEditor();
+        explicit ImageEditor(ros::NodeHandle input_nh, ros::NodeHandle input_private_nh);
         void cv_process();
+        void set_threshold(float threshold);
+        std::string get_roomba();
 
     private:
         //method
         void cv_image_callback(const sensor_msgs::ImageConstPtr&);
 
         //param
+        std::string roomba;
         float th;
 
         //member

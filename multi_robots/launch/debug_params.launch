@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba" default="roomba1" />
+    <arg name="bagdir" default="/home/amsl/bagfiles/roomba/six_roomba_20210513/replace_ns_bagfiles" />
+    <arg name="add_bag_option" default="" />
+
+    <arg name="manager" default="debug_manager" />
+
+    <param name="use_sim_time" value="true" />
+    <node pkg="rosbag" type="play" name="rosbag_play" args="$(arg bagdir)/$(arg roomba).bag --clock $(arg add_bag_option)" required="true" output="screen" />
+
+    <group if="$(eval roomba=='roomba1')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg roomba)/$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg roomba)/$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="" />
+        </include>
+    </group>
+    <group if="$(eval roomba=='roomba2')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="green" />
+        </include>
+    </group>
+    <group if="$(eval roomba=='roomba3')" ns="$(arg roomba)">
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="yellow" />
+        </include>
+    </group>
+    <group if="$(eval roomba=='roomba4')" ns="$(arg roomba)">
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="blue" />
+        </include>
+    </group>
+    <group if="$(eval roomba=='roomba5')" ns="$(arg roomba)">
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="orange" />
+        </include>
+    </group>
+    <group if="$(eval roomba=='roomba6')" ns="$(arg roomba)">
+        <include file="$(find multi_robots)/launch/republisher.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+        </include>
+        <include file="$(find multi_robots)/launch/launch_softwares.launch" >
+            <arg name="external_manager" default="true" />
+            <arg name="manager" default="$(arg manager)" />
+            <arg name="roomba" default="$(arg roomba)" />
+            <arg name="use_colors" default="purple" />
+        </include>
+    </group>
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="dynamic_reconfig" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robots)/rviz/debug_$(arg roomba).rviz" />
+</launch>

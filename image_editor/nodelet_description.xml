@@ -1,0 +1,9 @@
+<library path="lib/libimage_editor">
+    <class name="image_editor/image_editor_nodelet"
+           type="image_editor::ImageEditorNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+            image editor nodelet
+        </description>
+    </class>
+</library>

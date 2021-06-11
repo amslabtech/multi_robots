@@ -1,11 +1,30 @@
-#include "image_editor.h"
+#include "image_editor/image_editor.h"
 
-ImageEditor::ImageEditor():private_nh("")
+ImageEditor::ImageEditor() : ImageEditor(ros::NodeHandle(), ros::NodeHandle("~")) {}
+
+ImageEditor::ImageEditor(ros::NodeHandle input_nh, ros::NodeHandle input_private_nh)
+    : nh(input_nh), private_nh(input_private_nh)
 {
-    private_nh.param("th",th,{0.9});
-    image_sub = nh.subscribe("/equirectangular/image_raw",10,&ImageEditor::cv_image_callback,this);
+    if (!private_nh.hasParam("roomba")) {
+        ROS_ERROR_STREAM("ImageEditor requires 'roomba' param.");
+        ros::shutdown();
+        return;
+    }
+    private_nh.getParam("roomba", roomba);
+    private_nh.param(roomba + "_whitebalance_threshold",th,{0.9});
+    image_sub = nh.subscribe("equirectangular/image_raw",10,&ImageEditor::cv_image_callback,this);
     image_pub = nh.advertise<sensor_msgs::Image>("equirectangular/cv_image_edited",1);
 }
+
+void ImageEditor::set_threshold(float threshold) {
+    if (threshold < 0.f || 1.f < threshold) {
+        ROS_WARN_STREAM("threshold is out of range. threshold = " << threshold);
+        return;
+    }
+    th = threshold;
+}
+
+std::string ImageEditor::get_roomba() { return roomba; }
 
 void ImageEditor::cv_image_callback(const sensor_msgs::ImageConstPtr& cv_sub_image)
 {
@@ -43,12 +62,3 @@ void ImageEditor::cv_process()
     ros::spin();
     return;
 }
-
-int main(int argc,char** argv)
-{
-    ros::init(argc,argv,"image_editor");
-    ImageEditor image_editor;
-    image_editor.cv_process();
-    return 0;
-}
-
