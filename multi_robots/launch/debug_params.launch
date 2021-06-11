@@ -13,11 +13,11 @@
         <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
         <include file="$(find multi_robots)/launch/republisher.launch" >
             <arg name="external_manager" default="true" />
-            <arg name="manager" default="$(arg roomba)/$(arg manager)" />
+            <arg name="manager" default="$(arg manager)" />
         </include>
         <include file="$(find multi_robots)/launch/launch_softwares.launch" >
             <arg name="external_manager" default="true" />
-            <arg name="manager" default="$(arg roomba)/$(arg manager)" />
+            <arg name="manager" default="$(arg manager)" />
             <arg name="roomba" default="$(arg roomba)" />
             <arg name="use_colors" default="" />
         </include>
@@ -36,6 +36,7 @@
         </include>
     </group>
     <group if="$(eval roomba=='roomba3')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
         <include file="$(find multi_robots)/launch/republisher.launch" >
             <arg name="external_manager" default="true" />
             <arg name="manager" default="$(arg manager)" />
@@ -48,6 +49,7 @@
         </include>
     </group>
     <group if="$(eval roomba=='roomba4')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
         <include file="$(find multi_robots)/launch/republisher.launch" >
             <arg name="external_manager" default="true" />
             <arg name="manager" default="$(arg manager)" />
@@ -60,6 +62,7 @@
         </include>
     </group>
     <group if="$(eval roomba=='roomba5')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
         <include file="$(find multi_robots)/launch/republisher.launch" >
             <arg name="external_manager" default="true" />
             <arg name="manager" default="$(arg manager)" />
@@ -72,6 +75,7 @@
         </include>
     </group>
     <group if="$(eval roomba=='roomba6')" ns="$(arg roomba)">
+        <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
         <include file="$(find multi_robots)/launch/republisher.launch" >
             <arg name="external_manager" default="true" />
             <arg name="manager" default="$(arg manager)" />
