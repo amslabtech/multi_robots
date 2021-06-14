@@ -2,5 +2,5 @@ roomba1_whitebalance_threshold: 0.32
 roomba2_whitebalance_threshold: 0.30
 roomba3_whitebalance_threshold: 0.9
 roomba4_whitebalance_threshold: 0.9
-roomba5_whitebalance_threshold: 0.9
-roomba6_whitebalance_threshold: 0.9
+roomba5_whitebalance_threshold: 0.30
+roomba6_whitebalance_threshold: 0.20
