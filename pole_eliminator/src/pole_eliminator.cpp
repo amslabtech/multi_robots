@@ -33,7 +33,7 @@ void PoleEliminator::laser_scan_callback(const sensor_msgs::LaserScanConstPtr &r
     sensor_msgs::LaserScan corrected_laser = *raw_laser;
     if (!LASER_FRAME.empty()) corrected_laser.header.frame_id = LASER_FRAME;
     for (size_t range_idx = 0; range_idx < pole_ranges.size(); range_idx++) {
-        for (size_t i = pole_ranges[range_idx].first + 1; i < pole_ranges[range_idx].second; i++) {
+        for (size_t i = pole_ranges[range_idx].first; i < pole_ranges[range_idx].second; i++) {
             double angle = ranges_index_to_angle(i, corrected_laser.angle_min,
                                                  corrected_laser.angle_increment);
             corrected_laser.ranges[i] = linear_interpolation_funcs[range_idx](angle);
