@@ -1,174 +1,168 @@
 #include "pole_eliminator/pole_eliminator.h"
 
-Pole_Eliminator::Pole_Eliminator() : private_nh("~") {
-    //  parameter
-    private_nh.param("hz", hz, {40});
-    private_nh.param("width", width, {5});
-    private_nh.param("height", height, {5});
-    private_nh.param("resolution", resolution, {0.05});
-    private_nh.param("radius_limit", radius_limit, {49});
-    private_nh.param("laser_frame_id", laser_frame_id, std::string("laser"));
+PoleEliminator::PoleEliminator() : private_nh_("~") {
+    private_nh_.param("HZ", HZ, 40);
+    private_nh_.param("ROBOT_RADIUS", ROBOT_RADIUS, 0.30);
+    private_nh_.param("MARGIN", MARGIN, 15);
+    private_nh_.param("LASER_FRAME", LASER_FRAME, std::string(""));
 
-    //  subscriber
-    sub_laser_scan = nh.subscribe("scan", 10, &Pole_Eliminator::laser_scan_callback, this);
-    //  publisher
-    pub_laser_scan = nh.advertise<sensor_msgs::LaserScan>("corrected_scan", 10);
+    raw_laser_scan_sub_ = nh_.subscribe("scan", 10, &PoleEliminator::laser_scan_callback, this);
+    corrected_laser_scan_pub_ = nh_.advertise<sensor_msgs::LaserScan>("corrected_scan", 1);
 }
 
-void Pole_Eliminator::laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg) {
-    scan_data = *msg;
-    scan_data.header.frame_id = laser_frame_id;
-    ROS_INFO_STREAM("recieved data size : " << msg->ranges.size());
-    bool f = false;
-    double dist = 0.30;
-    double a = -1.0;
-    double b = 0.0;
-    double c = 0.0;
-    double point_min[2] = {0.0, 0.0};
-    double point_max[2] = {0.0, 0.0};
-    double cross_point[2] = {0.0, 0.0};
-    static double scan_ranges_buffer[1081];
-    static double scan_intensities_buffer[1081];
-    int counter = 0;
+void PoleEliminator::laser_scan_callback(const sensor_msgs::LaserScanConstPtr &raw_laser) {
+    const size_t LASER_SIZE = raw_laser->ranges.size();
+    ROS_ASSERT(LASER_SIZE <= MAX_LASER_SIZE);
 
-    for (size_t i = 0; i < 4; i++) {
-        pole_min_idx[i] = 0;
-        pole_max_idx[i] = 0;
+    static std::array<bool, MAX_LASER_SIZE> is_in_radius;
+    check_laser_is_in_radius(raw_laser, &is_in_radius);
+    extend_is_in_radius(MARGIN, LASER_SIZE, &is_in_radius);
+
+    //  is_in_radius[i] == true (first <= i < second)
+    std::vector<std::pair<size_t, size_t>> pole_ranges;
+    check_ranges_is_in_radius(LASER_SIZE, is_in_radius, &pole_ranges);
+    ROS_DEBUG("Auto detector poles:");
+    for (const auto &range : pole_ranges) {
+        ROS_DEBUG_STREAM("[" << range.first << ", " << range.second << ")");
     }
 
-    for (size_t i = 0; i < msg->ranges.size(); i++) {
-        if (counter == 4) {
-            if (i < 1000) {
-                counter = 5;
-            }
-            break;
-        }
-        if (scan_data.ranges[i] < dist && !f) {
-            f = true;
-            ROS_INFO_STREAM("from " << counter << ", " << i);
-            if (i == 0)
-                pole_min_idx[counter] = i;
-            else
-                pole_min_idx[counter] = i - 20;
-            if (i > 1000) {
-                pole_min_idx[counter] = i - 20;
-                pole_max_idx[counter] = 1081;
-            }
-        }
-        if (scan_data.ranges[i] >= dist && f) {
-            f = false;
-            ROS_INFO_STREAM("     " << counter << ", " << i << " end");
-            pole_max_idx[counter] = i + 20;
-        }
+    std::vector<std::function<double(double)>> linear_interpolation_funcs;
+    register_calculation_function(raw_laser, pole_ranges, &linear_interpolation_funcs);
+    ROS_ASSERT(pole_ranges.size() == linear_interpolation_funcs.size());
 
-        if ((counter == 0 || counter == 3) && pole_max_idx[counter] - pole_min_idx[counter] > 30)
-            counter++;
-        if ((counter == 1 || counter == 2) && pole_max_idx[counter] - pole_min_idx[counter] > 50)
-            counter++;
+    sensor_msgs::LaserScan corrected_laser = *raw_laser;
+    if (!LASER_FRAME.empty()) corrected_laser.header.frame_id = LASER_FRAME;
+    for (size_t i = 0; i < pole_ranges.size(); i++) {
+        for (size_t j = pole_ranges[i].first + 1; j < pole_ranges[i].second; j++) {
+            double angle = ranges_index_to_angle(j, corrected_laser.angle_min,
+                                                 corrected_laser.angle_increment);
+            corrected_laser.ranges[j] = linear_interpolation_funcs[i](angle);
+            // ROS_INFO_STREAM(raw_laser->ranges[j] << " to " << corrected_laser.ranges[j]);
+        }
     }
+    corrected_laser_scan_pub_.publish(corrected_laser);
+}
 
-    ROS_INFO_STREAM("Auto detector");
-    for (size_t i = 0; i < 4; i++) {
-        ROS_INFO_STREAM("from " << pole_min_idx[i]);
-        ROS_INFO_STREAM("     " << pole_max_idx[i] << " end");
+void PoleEliminator::check_laser_is_in_radius(const sensor_msgs::LaserScanConstPtr &laser,
+                                              std::array<bool, MAX_LASER_SIZE> *is_in_radius_ptr) {
+    for (size_t i = 0; i < laser->ranges.size(); i++) {
+        if (laser->ranges[i] < ROBOT_RADIUS)
+            is_in_radius_ptr->at(i) = true;
+        else
+            is_in_radius_ptr->at(i) = false;
     }
-    ROS_INFO_STREAM("counter=" << counter);
-    if (counter == 4 && pole_max_idx[0] < pole_min_idx[1]) {
-        counter = 0;
-        point_min[0] = scan_data.ranges[pole_min_idx[counter]] *
-                       cos((-45.0 + pole_min_idx[counter] * 0.25) * M_PI / 180.0);
-        point_min[1] = scan_data.ranges[pole_min_idx[counter]] *
-                       sin((-45.0 + pole_min_idx[counter] * 0.25) * M_PI / 180.0);
-        point_max[0] = scan_data.ranges[pole_max_idx[counter]] *
-                       cos((-45.0 + pole_max_idx[counter] * 0.25) * M_PI / 180.0);
-        point_max[1] = scan_data.ranges[pole_max_idx[counter]] *
-                       sin((-45.0 + pole_max_idx[counter] * 0.25) * M_PI / 180.0);
-        ROS_INFO_STREAM("point_min " << point_min[0] << ", " << point_min[1] << ", "
-                                     << sqrt(pow(point_min[0], 2.0) + pow(point_min[1], 2.0)));
-        ROS_INFO_STREAM("point_max " << point_max[0] << ", " << point_max[1] << ", "
-                                     << sqrt(pow(point_max[0], 2.0) + pow(point_max[1], 2.0)));
-        for (size_t i = 0; i < msg->ranges.size(); i++) {
-            if (pole_min_idx[counter] <= i && i <= pole_max_idx[counter]) {
-                b = (point_min[1] - point_max[1]) / (point_min[0] - point_max[0]);
-                c = (point_max[0] * point_min[1] - point_min[0] * point_max[1]) /
-                    (point_max[0] - point_min[0]);
-                if (-45.0 + i * 0.25 == 0.0 || -45.0 + i * 0.25 == 180.0) {
-                    cross_point[0] = -c / b;
-                    cross_point[1] = 0.0;
-                } else if (-45.0 + i * 0.25 == 90.0 || -45.0 + i * 0.25 == 270.0) {
-                    cross_point[0] = 0.0;
-                    cross_point[1] = c;
-                } else {
-                    a = tan((-45.0 + i * 0.25) * M_PI / 180.0);
-                    // ROS_INFO_STREAM("a, theta=" << a << ", " << -45.0+i*0.25);
-                    cross_point[0] = c / (a - b);
-                    cross_point[1] = a * c / (a - b);
-                }
+}
 
-                // ROS_INFO_STREAM("cross_point " << cross_point[0] << ", " << cross_point[1]);
-                if (counter == 0) {
-                    scan_data.ranges[i] = scan_data.ranges[pole_max_idx[counter]];
-                    scan_data.intensities[i] = scan_data.intensities[pole_max_idx[counter]];
-                } else if (counter == 3) {
-                    scan_data.ranges[i] = scan_data.ranges[pole_min_idx[counter]];
-                    scan_data.intensities[i] = scan_data.intensities[pole_min_idx[counter]];
-                } else {
-                    scan_data.ranges[i] = sqrt(pow(cross_point[0], 2.0) + pow(cross_point[1], 2.0));
-                    scan_data.intensities[i] = scan_data.intensities[pole_min_idx[counter]];
-                }
-
-                // ROS_INFO_STREAM("Log a b c " << a << ", " << b << ", " << c);
-                ROS_INFO_STREAM("scan_data.ranges " << scan_data.ranges[i]);
-
-            } else if (pole_max_idx[counter] < i) {
-                counter++;
-                point_min[0] = scan_data.ranges[pole_min_idx[counter]] *
-                               cos((-45.0 + pole_min_idx[counter] * 0.25) * M_PI / 180.0);
-                point_min[1] = scan_data.ranges[pole_min_idx[counter]] *
-                               sin((-45.0 + pole_min_idx[counter] * 0.25) * M_PI / 180.0);
-                point_max[0] = scan_data.ranges[pole_max_idx[counter]] *
-                               cos((-45.0 + pole_max_idx[counter] * 0.25) * M_PI / 180.0);
-                point_max[1] = scan_data.ranges[pole_max_idx[counter]] *
-                               sin((-45.0 + pole_max_idx[counter] * 0.25) * M_PI / 180.0);
-                ROS_INFO_STREAM("point_min "
-                                << point_min[0] << ", " << point_min[1] << ", "
-                                << sqrt(pow(point_min[0], 2.0) + pow(point_min[1], 2.0)));
-                ROS_INFO_STREAM("point_max "
-                                << point_max[0] << ", " << point_max[1] << ", "
-                                << sqrt(pow(point_max[0], 2.0) + pow(point_max[1], 2.0)));
-            }
-            scan_ranges_buffer[i] = scan_data.ranges[i];
-            scan_intensities_buffer[i] = scan_data.intensities[i];
+void PoleEliminator::extend_is_in_radius(int margin, const size_t LASER_SIZE,
+                                         std::array<bool, MAX_LASER_SIZE> *is_in_radius_ptr) {
+    std::vector<size_t> extend_back, extend_forward;
+    for (size_t i = 0; i < LASER_SIZE; i++) {
+        if (i > 0 && !(is_in_radius_ptr->at(i - 1)) && is_in_radius_ptr->at(i))
+            extend_back.push_back(i);
+        if (i < LASER_SIZE - 1 && is_in_radius_ptr->at(i) && !(is_in_radius_ptr->at(i + 1)))
+            extend_forward.push_back(i);
+    }
+    for (auto idx : extend_back) {
+        for (size_t i = std::max(0ul, idx - margin); i < idx; i++) {
+            is_in_radius_ptr->at(i) = true;
         }
+    }
+    for (auto idx : extend_forward) {
+        for (size_t i = idx + 1; i <= std::min(idx + margin, LASER_SIZE - 1); i++) {
+            is_in_radius_ptr->at(i) = true;
+        }
+    }
+}
+
+void PoleEliminator::check_ranges_is_in_radius(
+    const size_t LASER_SIZE, const std::array<bool, MAX_LASER_SIZE> &is_in_radius,
+    std::vector<std::pair<size_t, size_t>> *pole_ranges_ptr) {
+    bool is_started = false;
+    size_t st_idx, end_idx;
+    for (size_t i = 0; i < LASER_SIZE; i++) {
+        if (!is_started && is_in_radius[i]) {
+            st_idx = i;
+            is_started = true;
+        }
+        if (is_started && !(is_in_radius[i])) {
+            end_idx = i;
+            is_started = false;
+            pole_ranges_ptr->emplace_back(st_idx, end_idx);
+        }
+    }
+    if (is_started) {
+        pole_ranges_ptr->emplace_back(st_idx, LASER_SIZE);
+    }
+}
+
+void PoleEliminator::register_calculation_function(
+    const sensor_msgs::LaserScanConstPtr &laser,
+    const std::vector<std::pair<size_t, size_t>> &pole_ranges,
+    std::vector<std::function<double(double)>> *linear_interpolation_funcs_ptr) {
+    for (const auto &range : pole_ranges) {
+        ROS_ASSERT(!(range.first == 0 && range.second == laser->ranges.size()));
+        if (range.first == 0) {
+            linear_interpolation_funcs_ptr->push_back(
+                [&](double angle) { return laser->ranges[range.second]; });
+        } else if (range.second == laser->ranges.size()) {
+            linear_interpolation_funcs_ptr->push_back(
+                [&](double angle) { return laser->ranges[range.first]; });
+        } else {
+            double b, c;
+            calc_constant_bc(laser, range.first, range.second, &b, &c);
+            linear_interpolation_funcs_ptr->push_back(
+                std::bind(&PoleEliminator::calc_range, this, b, c, std::placeholders::_1));
+        }
+    }
+}
+
+void PoleEliminator::calc_constant_bc(const sensor_msgs::LaserScanConstPtr &laser, size_t min_idx,
+                                      size_t max_idx, double *b_ptr, double *c_ptr) {
+    double min_theta = ranges_index_to_angle(min_idx, laser->angle_min, laser->angle_increment);
+    double max_theta = ranges_index_to_angle(max_idx, laser->angle_min, laser->angle_increment);
+
+    double min_point_x = laser->ranges[min_idx] * std::cos(min_theta);
+    double min_point_y = laser->ranges[min_idx] * std::sin(min_theta);
+    double max_point_x = laser->ranges[max_idx] * std::cos(max_theta);
+    double max_point_y = laser->ranges[max_idx] * std::sin(max_theta);
+
+    if (min_point_x == max_point_x)
+        ROS_FATAL_STREAM("PoleEliminator::calc_constant_bc contains a division by zero");
+    *b_ptr = (min_point_y - max_point_y) / (min_point_x - max_point_x);
+    *c_ptr = (max_point_x * min_point_y - min_point_x * max_point_y) / (max_point_x - min_point_x);
+}
+
+double PoleEliminator::ranges_index_to_angle(size_t index, double angle_min,
+                                             double angle_increase) {
+    return angle_min + index * angle_increase;
+}
+
+double PoleEliminator::calc_range(double b, double c, double angle) {
+    static auto is_equal = [](double val1, double val2) -> bool {
+        constexpr double eps = 0.0001;
+        if (std::abs(val1 - val2) < eps) return true;
+        return false;
+    };
+    double cross_x, cross_y;
+    if (is_equal(0.0, angle) || is_equal(M_PI, angle) || is_equal(-M_PI, angle)) {
+        cross_x = -c / b;
+        cross_y = 0.0;
+    } else if (is_equal(M_PI / 2.0, angle) || is_equal(-M_PI / 2.0, angle)) {
+        cross_x = 0.0;
+        cross_y = c;
     } else {
-        for (size_t i = 0; i < msg->ranges.size(); i++) {
-            scan_data.ranges[i] = scan_ranges_buffer[i];
-            scan_data.intensities[i] = scan_intensities_buffer[i];
-        }
-        if (counter > 4) {
-            ROS_WARN_STREAM("Counter error");
-        }
-        if (pole_max_idx[0] >= pole_min_idx[1]) {
-            ROS_WARN_STREAM("Pole detection error");
-        }
+        double a = std::tan(angle);
+        if (a == b) ROS_FATAL_STREAM("PoleEliminator::calc_range contains a division by zero");
+        cross_x = c / (a - b);
+        cross_y = a * c / (a - b);
     }
-
-    ROS_INFO_STREAM("Received");
-    corrected_scan_data = scan_data;
-    pub_laser_scan.publish(corrected_scan_data);
+    return std::sqrt(cross_x * cross_x + cross_y * cross_y);
 }
 
-void Pole_Eliminator::process() {
-    ros::Rate loop_rate(hz);
+void PoleEliminator::process() {
+    ros::Rate loop_rate(HZ);
     while (ros::ok()) {
         ros::spinOnce();
         loop_rate.sleep();
     }
-}
-
-int main(int argc, char** argv) {
-    ros::init(argc, argv, "pole_eliminator");
-    Pole_Eliminator pole_eliminator;
-    pole_eliminator.process();
-    return 0;
 }
