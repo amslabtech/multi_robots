@@ -3,18 +3,16 @@
 
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
-#include "math.h"
 
-class Pole_Eliminator
-{
+class Pole_Eliminator {
  public:
-     Pole_Eliminator();
-     void process();
+    Pole_Eliminator();
+    void process();
 
  private:
-    //method
+    //  method
     void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr&);
-    //parameter
+    //  parameter
     int hz;
     int width;
     int height;
@@ -28,13 +26,12 @@ class Pole_Eliminator
     bool is_edge;
     std::string laser_frame_id;
 
-    //member
+    //  member
     ros::NodeHandle nh;
     ros::NodeHandle private_nh;
     ros::Publisher pub_laser_scan;
     ros::Subscriber sub_laser_scan;
     sensor_msgs::LaserScan scan_data;
     sensor_msgs::LaserScan corrected_scan_data;
-
 };
-#endif//POLE_ELIMINATOR_H
+#endif  // POLE_ELIMINATOR_H
