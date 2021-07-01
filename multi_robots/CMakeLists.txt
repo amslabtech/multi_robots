@@ -8,7 +8,6 @@ project(multi_robots)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  chibi20_2
   color_detector
   dynamixel_workbench_controllers
   multi_robots_tf
