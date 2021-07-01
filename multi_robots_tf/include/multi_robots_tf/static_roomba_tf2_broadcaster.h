@@ -17,6 +17,7 @@ class StaticTf2Broadcaster {
     std::string base_link_frame_id;
     std::string lidar_frame_id;
     std::string thetas_frame_id;
+    std::string dynamixel_frame_id;
     std::string realsense_frame_id;
     double lidar_x;
     double lidar_y;
@@ -42,7 +43,7 @@ class StaticTf2Broadcaster {
     geometry_msgs::TransformStamped thetas_transformStamped;
     geometry_msgs::TransformStamped realsense_transformStamped;
 
-    geometry_msgs::TransformStamped create_transformStamped_msg(std::string child_frame_id,
+    geometry_msgs::TransformStamped create_transformStamped_msg(std::string frame_id, std::string child_frame_id,
                                                                 double x, double y, double z,
                                                                 double roll, double pitch,
                                                                 double yaw);

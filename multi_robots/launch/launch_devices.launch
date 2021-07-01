@@ -36,6 +36,8 @@
     <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
         <param name="execution_time" value="0.2" type="double" />
         <param name="offset_angle" value="0.00" type="double" />
+        <param name="dynamixel_frame_id" value="$(arg roomba)/dynamixel" />
+        <param name="base_link_frame_id" value="$(arg roomba)/base_link" />
     </node>
 
     <!-- realsense d455 -->

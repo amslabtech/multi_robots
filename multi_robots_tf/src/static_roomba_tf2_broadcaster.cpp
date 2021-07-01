@@ -5,6 +5,7 @@ StaticTf2Broadcaster::StaticTf2Broadcaster() : private_nh("~") {
     private_nh.param("base_link_frame_id", base_link_frame_id, std::string("base_link"));
     private_nh.param("lidar_frame_id", lidar_frame_id, std::string("scan"));
     private_nh.param("thetas_frame_id", thetas_frame_id, std::string("theta_s"));
+    private_nh.param("dynamixel_frame_id", dynamixel_frame_id, std::string("dynamixel"));
     private_nh.param("realsense_frame_id", realsense_frame_id, std::string("realsense"));
     private_nh.param("lidar_x", lidar_x, 0.0);
     private_nh.param("lidar_y", lidar_y, 0.0);
@@ -25,22 +26,23 @@ StaticTf2Broadcaster::StaticTf2Broadcaster() : private_nh("~") {
     private_nh.param("realsense_pitch", realsense_pitch, 0.0);
     private_nh.param("realsense_yaw", realsense_yaw, 0.0);
 
-    lidar_transformStamped = create_transformStamped_msg(lidar_frame_id, lidar_x, lidar_y, lidar_z,
+    lidar_transformStamped = create_transformStamped_msg(base_link_frame_id, lidar_frame_id, lidar_x, lidar_y, lidar_z,
                                                          lidar_roll, lidar_pitch, lidar_yaw);
-    thetas_transformStamped = create_transformStamped_msg(
-        thetas_frame_id, thetas_x, thetas_y, thetas_z, thetas_roll, thetas_pitch, thetas_yaw);
+    thetas_transformStamped = create_transformStamped_msg(base_link_frame_id, thetas_frame_id, thetas_x, thetas_y,
+                                                          thetas_z, thetas_roll, thetas_pitch, thetas_yaw);
     realsense_transformStamped =
-        create_transformStamped_msg(realsense_frame_id, realsense_x, realsense_y, realsense_z,
+        create_transformStamped_msg(dynamixel_frame_id, realsense_frame_id, realsense_x, realsense_y, realsense_z,
                                     realsense_roll, realsense_pitch, realsense_yaw);
 }
 
-geometry_msgs::TransformStamped StaticTf2Broadcaster::create_transformStamped_msg(
-    std::string child_frame_id, double x, double y, double z, double roll, double pitch,
-    double yaw) {
+geometry_msgs::TransformStamped StaticTf2Broadcaster::create_transformStamped_msg(std::string frame_id,
+                                                                                  std::string child_frame_id, double x,
+                                                                                  double y, double z, double roll,
+                                                                                  double pitch, double yaw) {
     geometry_msgs::TransformStamped static_transformStamped;
 
     static_transformStamped.header.stamp = ros::Time::now();
-    static_transformStamped.header.frame_id = base_link_frame_id;
+    static_transformStamped.header.frame_id = frame_id;
     static_transformStamped.child_frame_id = child_frame_id;
 
     static_transformStamped.transform.translation.x = x;
@@ -58,11 +60,7 @@ geometry_msgs::TransformStamped StaticTf2Broadcaster::create_transformStamped_ms
 }
 
 void StaticTf2Broadcaster::process() {
-    static_broadcaster.sendTransform({
-        lidar_transformStamped,
-        thetas_transformStamped,
-        realsense_transformStamped
-    });
+    static_broadcaster.sendTransform({lidar_transformStamped, thetas_transformStamped, realsense_transformStamped});
     ROS_INFO_STREAM("Spinning until killed publishing");
     ROS_INFO_STREAM("    " << base_link_frame_id << " to " << lidar_frame_id);
     ROS_INFO_STREAM("    " << base_link_frame_id << " to " << thetas_frame_id);
