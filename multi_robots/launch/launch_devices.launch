@@ -73,6 +73,7 @@
         <param name="base_link_frame_id" value="$(arg roomba)/base_link" />
         <param name="lidar_frame_id" value="$(arg roomba)/laser" />
         <param name="thetas_frame_id" value="$(arg roomba)/theta_s" />
+        <param name="dynamixel_frame_id" value="$(arg roomba)/dynamixel" />
         <param name="realsense_frame_id" value="$(arg roomba)/camera_link" />
         <rosparam command="load" file="$(find multi_robots_tf)/config/static_roomba_tf.yaml" />
     </node>
