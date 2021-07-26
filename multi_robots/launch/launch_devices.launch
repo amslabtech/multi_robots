@@ -34,6 +34,7 @@
         <arg name="usb_port" default="$(arg usb_port)" />
     </include>
     <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
+        <remap from="/angle" to="$(arg roomba)/dynamixel/angle" />
         <param name="execution_time" value="0.2" type="double" />
         <param name="offset_angle" value="0.00" type="double" />
         <param name="dynamixel_frame_id" value="$(arg roomba)/dynamixel" />
