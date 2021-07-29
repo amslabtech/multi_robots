@@ -30,6 +30,8 @@
     </include>
     <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
         <remap from="/angle" to="dynamixel/angle" />
+        <remap from="/dynamixel_workbench/joint_states" to="dynamixel_workbench/joint_states" />
+        <remap from="/dynamixel_workbench/joint_trajectory" to="dynamixel_workbench/joint_trajectory" />
         <param name="execution_time" value="0.2" type="double" />
         <param name="offset_angle" value="0.00" type="double" />
         <param name="dynamixel_frame_id" value="$(arg roomba)/dynamixel" />
