@@ -16,7 +16,7 @@
             <param name="width" value="1280"/>
             <param name="height" value="720"/>
             <param name="video_mode" value="mjpeg"/>
-            <param name="frame_rate" value="15"/>
+            <param name="frame_rate" value="14"/>
             <param name="timestamp_method" value="start"/>
             <param name="frame_id" value="$(arg roomba)/theta_s" />
         </node>
