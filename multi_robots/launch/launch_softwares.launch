@@ -25,5 +25,6 @@
         <rosparam command="load" file="$(find multi_robots)/config/color_detector.yaml" />
         <remap from="equirectangular/image_raw" to="equirectangular/corrected/image_raw" />
         <param name="USE_COLORS" value="$(arg use_colors)" />
+        <param name="ROOMBA" value="$(arg roomba)" />
     </node>
 </launch>
