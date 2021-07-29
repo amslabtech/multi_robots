@@ -62,8 +62,7 @@
 
     <!-- hokuyo LiDAR -->
     <node name="urg_node" pkg="urg_node" type="urg_node" >
-        <param name="ip_address" value="" />
-        <param name="serial_port" value="/dev/ttyACM0" />
+        <rosparam command="load" file="$(find multi_robots)/config/lidar/$(arg roomba)_lidar.yaml" />
         <param name="publish_intensity" value="true" />
         <param name="publish_multiecho" value="false" />
         <param name="frame_id" value="$(arg roomba)/laser" />
