@@ -39,13 +39,14 @@
     </node>
 
     <!-- realsense d455 -->
-    <param name="/camera/aligned_depth_to_color/image_raw/compressed/format" value="png" />
-    <param name="/camera/aligned_depth_to_color/image_raw/compressed/png_level" value="5" />
-    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
-        <arg name="external_manager" default="$(arg external_manager)" />
-        <arg name="manager" default="$(arg manager)" />
-        <arg name="tf_prefix" default="$(arg roomba)/camera" />
-        <param name="filters" value="disparity,temporal" />
+    <param name="camera/aligned_depth_to_color/image_raw/compressed/format" value="png" />
+    <param name="camera/aligned_depth_to_color/image_raw/compressed/png_level" value="5" />
+    <include file="$(find multi_robots)/launch/rs_rgbd.launch">
+        <arg name="external_manager" value="$(arg external_manager)" />
+        <arg name="manager" value="$(arg manager)" />
+        <arg name="tf_prefix" value="$(arg roomba)/camera" />
+        <arg name="filters" value="disparity,temporal" />
+        <arg name="initial_reset" value="true" />
     </include>
 
     <!-- roomba -->
