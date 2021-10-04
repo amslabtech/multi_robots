@@ -22,6 +22,12 @@
 
     <node pkg="nodelet" type="nodelet" name="color_detector" args="load color_detector/color_detector_nodelet $(arg manager)">
         <rosparam command="load" file="$(find multi_robots)/config/hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba1_hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba2_hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba3_hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba4_hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba5_hsv.yaml" />
+        <rosparam command="load" file="$(find multi_robots)/config/image_hsv/roomba6_hsv.yaml" />
         <rosparam command="load" file="$(find multi_robots)/config/color_detector.yaml" />
         <remap from="equirectangular/image_raw" to="equirectangular/corrected/image_raw" />
         <param name="USE_COLORS" value="$(arg use_colors)" />
