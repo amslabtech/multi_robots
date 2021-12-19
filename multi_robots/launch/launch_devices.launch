@@ -23,9 +23,9 @@
     </group>
 
     <!-- dynamixel -->
-    <arg name="usb_port" default="/dev/ttyUSB1" />
+    <arg name="dynamixel_usb_port" default="/dev/dynamixel" />
     <include file="$(find dynamixel_workbench_controllers)/launch/roomba_joint.launch" >
-        <arg name="usb_port" default="$(arg usb_port)" />
+        <arg name="usb_port" default="$(arg dynamixel_usb_port)" />
         <arg name="roomba" default="$(arg roomba)" />
     </include>
     <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomba_dynamixel_controller" >
@@ -50,7 +50,9 @@
     </include>
 
     <!-- roomba -->
+    <arg name="roomba_usb_port" default="/dev/roomba" />
     <node name="roomba_500driver_meiji" pkg="roomba_500driver_meiji" type="main500" >
+        <arg name="roomba_usb_port" default="$(arg roomba_usb_port)" />
         <param name="ROBOT_FRAME" value="$(arg roomba)/base_link" />
         <param name="ODOM_FRAME" value="$(arg roomba)/odom" />
         <remap from="/roomba/control" to="roomba/control" />
