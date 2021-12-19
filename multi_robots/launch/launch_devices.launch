@@ -52,7 +52,7 @@
     <!-- roomba -->
     <arg name="roomba_usb_port" default="/dev/roomba" />
     <node name="roomba_500driver_meiji" pkg="roomba_500driver_meiji" type="main500" >
-        <arg name="roomba_usb_port" default="$(arg roomba_usb_port)" />
+        <param name="roomba_usb_port" value="$(arg roomba_usb_port)" />
         <param name="ROBOT_FRAME" value="$(arg roomba)/base_link" />
         <param name="ODOM_FRAME" value="$(arg roomba)/odom" />
         <remap from="/roomba/control" to="roomba/control" />
