@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba" />
+    <arg name="robot_frame_id" default="$(arg roomba)/base_link" />
+    <arg name="goal_dist" default="1.0" />
+    <arg name="right_dist" default="0.2" />
+
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+
+    <group ns="$(arg roomba)" >
+        <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+        <include file="$(find multi_robots)/launch/launch_devices.launch" >
+            <arg name="roomba" default="$(arg roomba)" />
+        </include>
+    </group>
+    <node pkg="rosbag" type="record" name="rosbag_record" args="record -O /home/amsl/$(arg roomba).bag /$(arg roomba)/camera/aligned_depth_to_color/image_raw/compressed /$(arg roomba)/camera/color/camera_info /$(arg roomba)/camera/color/image_rect_color/compressed /$(arg roomba)/theta_s/image_raw/compressed /$(arg roomba)/roomba/odometry /$(arg roomba)/corrected_scan /$(arg roomba)/amcl_pose /$(arg roomba)/local_goal /$(arg roomba)/dwa_planner/selected_trajectory /$(arg roomba)/dwa_planner/candidate_trajectories /$(arg roomba)/particlecloud /$(arg roomba)/target/position /$(arg roomba)/target/angle /tf /tf_static" />
+
+</launch>
