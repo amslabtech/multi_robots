@@ -5,14 +5,14 @@
     <arg name="external_manager" default="false" />
     <arg name="manager" default="softwares_manager" />
     <arg name="is_bag" default="true" />
-    <arg name="roomba" default="roomba1" />
+    <arg name="roomba" />
     <arg name="use_colors" default="" />
 
-    <arg name="bag_file" default="/home/ren/bagfiles/roomba/color_fix_20210916/$(arg roomba).bag" />
-    <arg name="option" default="" />
+    <arg name="bag_file" default="$(env HOME)/bagfiles/roomba/add_roomba_color/$(arg roomba).bag" />
+    <arg name="add_bag_option" default="" />
     <arg name="rviz_config" default="$(find multi_robots)/rviz/fix_color_$(arg roomba).rviz" />
 
-    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock $(arg option) $(arg bag_file)" required="true" />
+    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock $(arg add_bag_option) $(arg bag_file)" required="true" />
     <node pkg="map_server" type="map_server" name="map_server" args="$(find roomba_visualizer)/map/map.yaml" />
 
     <group ns="$(arg roomba)" >
