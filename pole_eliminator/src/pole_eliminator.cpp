@@ -37,6 +37,7 @@ void PoleEliminator::laser_scan_callback(const sensor_msgs::LaserScanConstPtr &r
             double angle = ranges_index_to_angle(i, corrected_laser.angle_min,
                                                  corrected_laser.angle_increment);
             corrected_laser.ranges[i] = linear_interpolation_funcs[range_idx](angle);
+            if (corrected_laser.ranges[i] < ROBOT_RADIUS) corrected_laser.ranges[i] = 30.0;
         }
     }
     corrected_laser_scan_pub_.publish(corrected_laser);
@@ -54,7 +55,7 @@ void PoleEliminator::check_laser_is_in_radius(const sensor_msgs::LaserScanConstP
 
 void PoleEliminator::extend_is_in_radius(int margin, const size_t LASER_SIZE,
                                          std::array<bool, MAX_LASER_SIZE> *is_in_radius_ptr) {
-    std::vector<size_t> extend_back, extend_forward;
+    std::vector<int> extend_back, extend_forward;
     for (size_t i = 0; i < LASER_SIZE; i++) {
         if (i > 0 && !(is_in_radius_ptr->at(i - 1)) && is_in_radius_ptr->at(i))
             extend_back.push_back(i);
@@ -62,12 +63,12 @@ void PoleEliminator::extend_is_in_radius(int margin, const size_t LASER_SIZE,
             extend_forward.push_back(i);
     }
     for (auto idx : extend_back) {
-        for (size_t i = std::max(0ul, idx - margin); i < idx; i++) {
+        for (size_t i = std::max(0, idx - margin); i < idx; i++) {
             is_in_radius_ptr->at(i) = true;
         }
     }
     for (auto idx : extend_forward) {
-        for (size_t i = idx + 1; i <= std::min(idx + margin, LASER_SIZE - 1); i++) {
+        for (size_t i = idx + 1; i <= std::min(idx + margin, static_cast<int>(LASER_SIZE) - 1); i++) {
             is_in_radius_ptr->at(i) = true;
         }
     }
@@ -108,7 +109,7 @@ void PoleEliminator::register_calculation_function(
                 [&](double angle) { return laser->ranges[range.first]; });
         } else {
             double b, c;
-            calc_constant_bc(laser, range.first, range.second, &b, &c);
+            calc_constant_bc(laser, range.first, range.second - 1, &b, &c);
             linear_interpolation_funcs_ptr->push_back(
                 std::bind(&PoleEliminator::calc_range, this, b, c, std::placeholders::_1));
         }
@@ -127,6 +128,7 @@ void PoleEliminator::calc_constant_bc(const sensor_msgs::LaserScanConstPtr &lase
 
     if (min_point_x == max_point_x)
         ROS_FATAL_STREAM("PoleEliminator::calc_constant_bc contains a division by zero");
+    // y = bx + c
     *b_ptr = (min_point_y - max_point_y) / (min_point_x - max_point_x);
     *c_ptr = (max_point_x * min_point_y - min_point_x * max_point_y) / (max_point_x - min_point_x);
 }
@@ -149,8 +151,8 @@ double PoleEliminator::calc_range(double b, double c, double angle) {
     } else if (is_equal(M_PI / 2.0, angle) || is_equal(-M_PI / 2.0, angle)) {
         cross_x = 0.0;
         cross_y = c;
-    } else {
-        double a = std::tan(angle);
+    } else {  // cross_y = b * cross_x + c
+        double a = std::tan(angle);  // a = cross_y / cross_x
         if (a == b) ROS_FATAL_STREAM("PoleEliminator::calc_range contains a division by zero");
         cross_x = c / (a - b);
         cross_y = a * c / (a - b);
