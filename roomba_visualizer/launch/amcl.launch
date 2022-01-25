@@ -17,10 +17,6 @@
         <param name="initial_pose_x" value="$(arg init_x)" />
         <param name="initial_pose_y" value="$(arg init_y)" />
         <param name="initial_pose_a" value="$(arg init_a)" />
-        <param name="update_min_d" value="0.1" />
-        <param name="update_min_a" value="0.1" />
-        <param name="use_map_topic" value="true" />
-        <param name="odom_alpha1" value="0.5" />  <!-- 回転方向のノイズ -->
         <remap from="scan" to="corrected_scan" />
         <remap from="map" to="map" />
     </node>
