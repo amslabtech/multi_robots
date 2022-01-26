@@ -126,7 +126,8 @@ void PoleEliminator::register_calculation_function(
             linear_interpolation_funcs_ptr->push_back(
                 std::bind(&PoleEliminator::calc_range, this, b, c, std::placeholders::_1));
         } else {
-            linear_interpolation_funcs_ptr->push_back([&](double angle) { return laser->range_max; });
+            linear_interpolation_funcs_ptr->push_back(
+                [&](double angle) { return std::min(laser->ranges[range.first], laser->ranges[range.second]); });
         }
     }
 }
