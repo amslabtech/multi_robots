@@ -11,7 +11,7 @@
         <param name="MARGIN" value="40" />
         <param name="LINEAR_INTERPOLATE_THRESHOLD" value="0.1745" />
     </node>
-    <node pkg="amcl" type="amcl" name="amcl" output="screen" >
+    <node pkg="amcl" type="amcl" name="amcl" >
         <rosparam command="load" file="$(arg amcl_config)" />
         <param name="base_frame_id" value="$(arg roomba)/base_link" />
         <param name="odom_frame_id" value="$(arg roomba)/odom" />
