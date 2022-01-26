@@ -13,7 +13,14 @@
     <node pkg="map_server" type="map_server" name="global_map"  args="$(arg map_file)"/>
 
     <!-- global_path_planner -->
-    <node pkg="chibi20_2" type="global_path_planner" name="global_path_planner" output="screen"/>
+    <!-- <node pkg="chibi20_2" type="global_path_planner" name="global_path_planner" output="screen" /> -->
+    <node pkg="chibi20_2" type="a_star_planner" name="a_star_planner" output="screen" >
+        <param name="map_topic_name" value="fixed_map" />
+        <param name="path_topic_name" value="global_path" />
+        <rosparam command="load" file="$(find chibi20_2)/config/a_star_planner/param/a_star_planner.yaml" />
+        <rosparam command="load" file="$(find chibi20_2)/config/a_star_planner/waypoints/waypoints_list.yaml" />
+        <rosparam command="load" file="$(find chibi20_2)/config/a_star_planner/waypoints/route_list.yaml" />
+    </node>
 
     <!-- map_maneger -->
     <node pkg="chibi20_2" type="map_maneger" name="map_maneger" output="screen"/>
@@ -25,7 +32,7 @@
 
     <!-- local_goal_creator -->
     <node pkg="chibi20_2" type="local_goal_creator" name="local_goal_creator" output="screen">
-        <param name="NUM_OF_LAPSES" value="5" type="int" />
+        <param name="NUM_OF_LAPSES" value="1" type="int" />
     </node>
 
     <!-- local_map_creator -->
