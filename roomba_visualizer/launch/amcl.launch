@@ -9,6 +9,7 @@
     <node pkg="pole_eliminator" type="pole_eliminator" name="pole_eliminator" >
         <param name="ROBOT_RADIUS" value="0.15" />
         <param name="MARGIN" value="40" />
+        <param name="LINEAR_INTERPOLATE_THRESHOLD" value="0.1745" />
     </node>
     <node pkg="amcl" type="amcl" name="amcl" output="screen" >
         <rosparam command="load" file="$(arg amcl_config)" />

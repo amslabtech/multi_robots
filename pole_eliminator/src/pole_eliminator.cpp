@@ -5,7 +5,7 @@ PoleEliminator::PoleEliminator() : private_nh_("~") {
     private_nh_.param("ROBOT_RADIUS", ROBOT_RADIUS, 0.30);
     private_nh_.param("MARGIN", MARGIN, 15);
     private_nh_.param("LASER_FRAME", LASER_FRAME, std::string(""));
-    private_nh_.param("LINEAR_INTERPOLATE_THRESHOLD", LINEAR_INTERPOLATE_THRESHOLD, M_PI / 6.0);
+    private_nh_.param("LINEAR_INTERPOLATE_THRESHOLD", LINEAR_INTERPOLATE_THRESHOLD, M_PI / 18.0);
 
     raw_laser_scan_sub_ = nh_.subscribe("scan", 10, &PoleEliminator::laser_scan_callback, this);
     corrected_laser_scan_pub_ = nh_.advertise<sensor_msgs::LaserScan>("corrected_scan", 1);
