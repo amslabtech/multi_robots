@@ -9,13 +9,13 @@
     </include>
 
     <!-- map_server -->
-    <arg name="map_file" default="$(find chibi20_2)/mapdata/chibi20_2_dkan7.yaml"/>
+    <arg name="map_file" default="$(find chibi20_2)/mapdata/map.yaml"/>
     <node pkg="map_server" type="map_server" name="global_map"  args="$(arg map_file)"/>
 
     <!-- global_path_planner -->
     <!-- <node pkg="chibi20_2" type="global_path_planner" name="global_path_planner" output="screen" /> -->
     <node pkg="chibi20_2" type="a_star_planner" name="a_star_planner" output="screen" >
-        <param name="map_topic_name" value="fixed_map" />
+        <param name="map_topic_name" value="map" />
         <param name="path_topic_name" value="global_path" />
         <rosparam command="load" file="$(find chibi20_2)/config/a_star_planner/param/a_star_planner.yaml" />
         <rosparam command="load" file="$(find chibi20_2)/config/a_star_planner/waypoints/waypoints_list.yaml" />
@@ -23,7 +23,7 @@
     </node>
 
     <!-- map_maneger -->
-    <node pkg="chibi20_2" type="map_maneger" name="map_maneger" output="screen"/>
+    <!-- <node pkg="chibi20_2" type="map_maneger" name="map_maneger" output="screen"/> -->
 
     <!-- localizer -->
     <node pkg="chibi20_2" type="localizer" name="localizer" output="screen">
