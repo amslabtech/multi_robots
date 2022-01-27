@@ -25,6 +25,19 @@
     <!-- map_maneger -->
     <!-- <node pkg="chibi20_2" type="map_maneger" name="map_maneger" output="screen"/> -->
 
+    <arg name="hz" default="10" />
+    <arg name="robot_radius" default="0.30" />
+    <arg name="margin" default="15" />
+    <!-- <arg name="laser_frame" default="" /> -->
+    <!-- pole_eliminator -->
+    <node pkg="pole_eliminator" type="pole_eliminator" name="pole_eliminator">
+        <remap from="scan" to="scan" />
+        <param name="HZ" value="$(arg hz)" />
+        <param name="ROBOT_RADIUS" value="$(arg robot_radius)" />
+        <param name="MARGIN" value="$(arg margin)" />
+        <param name="LASER_FRAME" value="$(arg roomba)/laser" />
+    </node>
+
     <!-- localizer -->
     <node pkg="chibi20_2" type="localizer" name="localizer" output="screen">
         <rosparam file="$(find chibi20_2)/config/param/localizer.yaml" command="load" />
