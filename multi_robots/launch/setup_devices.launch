@@ -36,12 +36,15 @@
     <!-- roomba -->
     <arg name="roomba_usb_port" default="/dev/roomba" />
     <node name="roomba_500driver_meiji" pkg="roomba_500driver_meiji" type="main500" >
-        <param name="USB_PORT" value="$(arg roomba_usb_port)" />
-        <param name="ROBOT_FRAME" value="$(arg roomba)/base_link" />
-        <param name="ODOM_FRAME" value="$(arg roomba)/odom" />
-        <remap from="/roomba/control" to="roomba/control" />
-        <remap from="/roomba/states" to="roomba/states" />
-        <remap from="/roomba/odometry" to="roomba/odometry" />
+        <param name="serial_port" value="/dev/ttyUSB0"/>
+        <param name="publish_intensity" value="true"/>
+        <param name="publish_multiecho" value="false"/>
+        <!-- <param name="USB_PORT" value="$(arg roomba_usb_port)" /> -->
+        <!-- <param name="ROBOT_FRAME" value="$(arg roomba)/base_link" /> -->
+        <!-- <param name="ODOM_FRAME" value="$(arg roomba)/odom" /> -->
+        <!-- <remap from="/roomba/control" to="roomba/control" /> -->
+        <!-- <remap from="/roomba/states" to="roomba/states" /> -->
+        <!-- <remap from="/roomba/odometry" to="roomba/odometry" /> -->
     </node>
 
     <!-- hokuyo LiDAR -->
