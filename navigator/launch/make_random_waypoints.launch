@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="waypoints" default="dkan_all_waypoints.yaml" />
+    <arg name="relation" default="dkan_all_points_relation.yaml" />
+    <arg name="first_idx" default="5" />
+    <arg name="second_idx" default="8" />
+    <arg name="size" default="30" />
+    <arg name="output" default="waypoints.yaml" />
+
+    <node pkg="navigator" type="waypoints_manager_node" name="waypoint_manager" output="screen" required="true">
+        <param name="RANDOM_WAYPOINTS" value="true" />
+        <param name="GOAL_THRESHOLD" value="1.5" />
+        <rosparam command="load" file="$(find navigator)/config/random/$(arg waypoints)" />
+        <rosparam command="load" file="$(find navigator)/config/random/$(arg relation)" />
+        <param name="FIRST_POSITION" value="$(arg first_idx)" />
+        <param name="FIRST_LOCAL_GOAL" value="$(arg second_idx)" />
+        <param name="EXPORT_WAYPOINTS_SIZE" value="$(arg size)" />
+        <param name="WAYPOINTS_FILENAME" value="$(find navigator)/config/$(arg output)" />
+    </node>
+</launch>

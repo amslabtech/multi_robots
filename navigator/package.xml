@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>navigator</name>
+  <version>0.0.0</version>
+  <description>The navigator package</description>
+  <maintainer email="amsl@todo.todo">amsl</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>amcl</depend>
+  <depend>dwa_planner</depend>
+  <depend>roomba_500driver_meiji</depend>
+  <depend>roomba_visualizer</depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+    <arg name="filedir" default="$(find navigator)/config" />
+    <arg name="file" default="waypoints.yaml" />
+    <arg name="confirm" default="false" />
+    <arg name="confirm_file" default="random/dkan_all_waypoints.yaml" />
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find navigator)/rviz/waypoints_creater.rviz" />
+    <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)"/>
+    <node pkg="navigator" type="rviz_waypoints_creater" name="rviz_waypoints_creater" output="screen" required="true" >
+        <param name="filename" value="$(arg filedir)/$(arg file)" />
+        <param name="CONFIRM_WAYPOINTS" value="$(arg confirm)" />
+        <rosparam command="load" file="$(arg filedir)/$(arg confirm_file)" />
+    </node>
+</launch>

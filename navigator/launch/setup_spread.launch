@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba" default="roomba1" />
+    <arg name="goal_dist" default="2.0" />
+    <arg name="right_dist" default="0.2" />
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+    <arg name="wp_dir" default="karasawa" />
+
+    <group ns="$(arg roomba)" >
+        <!-- map_server -->
+        <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+
+        <!-- launch_devices -->
+        <include file="$(find multi_robots)/launch/launch_devices.launch" >
+            <arg name="roomba" default="$(arg roomba)" />
+        </include>
+
+        <!-- amcl -->
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" default="$(arg roomba)" />
+        </include>
+
+        <!-- message_reviser_node -->
+        <node pkg="navigator" type="message_reviser_node" name="message_reviser" />
+
+        <!-- waypoints_manager_node -->
+        <node pkg="navigator" type="waypoints_manager_node" name="waypoint_manager">
+            <rosparam command="load" file="$(find navigator)/config/waypoints/$(arg wp_dir)/$(arg roomba)_karasawa.yaml" />
+            <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+            <param name="RIGHT_DISTANCE" value="$(arg right_dist)" />
+        </node>
+    </group>
+
+</launch>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba" />
+    <arg name="bagname" default="$(env HOME)/$(arg roomba).bag" />
+
+    <group ns="$(arg roomba)" >
+        <node pkg="rosbag" type="record" name="rosbag_record" args="record -O $(arg bagname) /$(arg roomba)/camera/aligned_depth_to_color/image_raw/compressed /$(arg roomba)/camera/color/camera_info /$(arg roomba)/camera/color/image_rect_color/compressed /$(arg roomba)/theta_s/image_raw/compressed /$(arg roomba)/roomba/odometry /$(arg roomba)/scan /$(arg roomba)/corrected_scan /$(arg roomba)/amcl_pose /$(arg roomba)/particlecloud /$(arg roomba)/local_goal /$(arg roomba)/dwa_planner/selected_trajectory /$(arg roomba)/dwa_planner/candidate_trajectories /$(arg roomba)/target/position /$(arg roomba)/target/angle /$(arg roomba)/map /tf /tf_static" />
+    </group>
+
+</launch>

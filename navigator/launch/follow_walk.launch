@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba" />
+    <arg name="robot_frame_id" default="$(arg roomba)/base_link" />
+    <arg name="goal_dist" default="2.0" />
+    <arg name="right_dist" default="0.2" />
+
+    <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
+
+    <group ns="$(arg roomba)" >
+        <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+        <include file="$(find multi_robots)/launch/launch_devices.launch" >
+            <arg name="roomba" default="$(arg roomba)" />
+        </include>
+        <include file="$(find roomba_visualizer)/launch/amcl.launch" >
+            <arg name="roomba" value="$(arg roomba)" />
+            <arg name="init_x" value="5.94087648391724" />
+            <arg name="init_y" value="1.34385836124420" />
+            <arg name="init_a" value="3.1415" />
+        </include>
+
+        <node pkg="navigator" type="message_reviser_node" name="message_reviser" />
+        <group if="$(eval roomba=='roomba1')">
+            <node pkg="navigator" type="target_follower" name="target_follower">
+                <param name="TARGET_ROOMBA" value="roomba2" />
+                <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+            </node>
+            <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
+                <rosparam command="load" file="$(find navigator)/config/dwa/dwa_param_follow.yaml"/>
+                <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
+                <remap from="/local_map" to="local_map"/>
+                <remap from="/scan" to="corrected_scan"/>
+                <remap from="/local_goal" to="local_goal"/>
+                <remap from="/cmd_vel" to="local_path/cmd_vel"/>
+                <remap from="/odom" to="roomba/corrected_odometry"/>
+            </node>
+        </group>
+
+        <group if="$(eval roomba=='roomba4')">
+            <node pkg="navigator" type="target_follower" name="target_follower">
+                <param name="TARGET_ROOMBA" value="roomba3" />
+                <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+            </node>
+            <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
+                <rosparam command="load" file="$(find navigator)/config/dwa/dwa_param_follow.yaml"/>
+                <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
+                <remap from="/local_map" to="local_map"/>
+                <remap from="/scan" to="corrected_scan"/>
+                <remap from="/local_goal" to="local_goal"/>
+                <remap from="/cmd_vel" to="local_path/cmd_vel"/>
+                <remap from="/odom" to="roomba/corrected_odometry"/>
+            </node>
+        </group>
+
+        <group if="$(eval roomba=='roomba6')">
+            <node pkg="navigator" type="target_follower" name="target_follower">
+                <param name="TARGET_ROOMBA" value="roomba5" />
+                <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+            </node>
+            <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
+                <rosparam command="load" file="$(find navigator)/config/dwa/dwa_param_follow.yaml"/>
+                <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
+                <remap from="/local_map" to="local_map"/>
+                <remap from="/scan" to="corrected_scan"/>
+                <remap from="/local_goal" to="local_goal"/>
+                <remap from="/cmd_vel" to="local_path/cmd_vel"/>
+                <remap from="/odom" to="roomba/corrected_odometry"/>
+            </node>
+        </group>
+
+        <group if="$(eval roomba=='roomba7')">
+            <node pkg="navigator" type="target_follower" name="target_follower">
+                <param name="TARGET_ROOMBA" value="roomba8" />
+                <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+            </node>
+            <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
+                <rosparam command="load" file="$(find navigator)/config/dwa/dwa_param_follow.yaml"/>
+                <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
+                <remap from="/local_map" to="local_map"/>
+                <remap from="/scan" to="corrected_scan"/>
+                <remap from="/local_goal" to="local_goal"/>
+                <remap from="/cmd_vel" to="local_path/cmd_vel"/>
+                <remap from="/odom" to="roomba/corrected_odometry"/>
+            </node>
+        </group>
+
+        <group if="$(eval roomba=='roomba0' or roomba=='roomba2' or roomba=='roomba3' or roomba=='roomba5' or roomba=='roomba8' or roomba=='roomba9')">
+            <node pkg="navigator" type="waypoints_manager_node" name="waypoint_manager">
+                <rosparam command="load" file="$(find navigator)/config/waypoints/dkan_cross/$(arg roomba).yaml" />
+                <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
+                <param name="RIGHT_DISTANCE" value="$(arg right_dist)" />
+            </node>
+            <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
+                <rosparam command="load" file="$(find navigator)/config/dwa/dwa_param.yaml"/>
+                <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
+                <remap from="/local_map" to="local_map"/>
+                <remap from="/scan" to="corrected_scan"/>
+                <remap from="/local_goal" to="local_goal"/>
+                <remap from="/cmd_vel" to="local_path/cmd_vel"/>
+                <remap from="/odom" to="roomba/corrected_odometry"/>
+            </node>
+        </group>
+        <include file="$(find navigator)/launch/bag_record.launch" >
+            <arg name="roomba" value="$(arg roomba)" />
+        </include>
+    </group>
+
+</launch>
