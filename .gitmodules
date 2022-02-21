@@ -16,6 +16,3 @@
 [submodule "DynamixelSDK"]
 	path = DynamixelSDK
 	url = https://github.com/ROBOTIS-GIT/DynamixelSDK.git
-[submodule "color_detector"]
-	path = color_detector
-	url = https://github.com/RenFukatsu/color_detector.git
