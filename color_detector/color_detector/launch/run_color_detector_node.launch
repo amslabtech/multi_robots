@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="manager_name" default="nodelet_magager" />
+    <arg name="is_bag" default="false" />
+    <arg name="roomba" default="" />
+
+    <arg name="use_colors" default="" />
+
+    <node pkg="nodelet" type="nodelet" name="$(arg manager_name)" args="manager" output="screen">
+    </node>
+
+    <group unless="$(arg is_bag)">
+        <group ns="theta_s">
+            <node pkg="nodelet" type="nodelet" name="libuvc_camera"
+                  args="load libuvc_camera/driver /$(arg roomba)/$(arg manager_name)" >
+                <param name="vendor" value="0x05ca"/>
+                <param name="product" value="0x2711"/>
+                <param name="serial" value=""/>
+                <!-- If the above parameters aren't unique, choose the first match: -->
+                <param name="index" value="0"/>
+
+                <!-- Image size and type -->
+                <param name="width" value="1280"/>
+                <param name="height" value="720"/>
+                <!-- choose whichever uncompressed format the camera supports: -->
+                <param name="video_mode" value="mjpeg"/> <!-- or yuyv/nv12/mjpeg -->
+                <param name="frame_rate" value="14"/>
+
+                <param name="timestamp_method" value="start"/> <!-- start of frame -->
+                <param name="camera_info_url" value="file:///tmp/cam.yaml"/>
+
+                <param name="auto_exposure" value="3"/> <!-- use aperture_priority auto exposure -->
+                <param name="auto_white_balance" value="false"/>
+                <param name="frame_id" value="$(arg roomba)/theta_s" />
+            </node>
+        </group>
+    </group>
+    <group if="$(arg is_bag)">
+        <node name="theta_s_republish" pkg="image_transport" type="republish" args="compressed raw">
+            <remap from="in" to="theta_s/image_raw" />
+            <remap from="out" to="theta_s/image_raw" />
+        </node>
+
+        <node name="depth_republish" pkg="image_transport" type="republish" args="compressed raw">
+            <remap from="in" to="camera/aligned_depth_to_color/image_raw" />
+            <remap from="out" to="camera/aligned_depth_to_color/image_raw" />
+        </node>
+
+        <node name="color_republish" pkg="image_transport" type="republish" args="compressed raw">
+            <remap from="in" to="camera/color/image_rect_color" />
+            <remap from="out" to="camera/color/image_rect_color" />
+        </node>
+
+        <arg name="image_raw_topic" default="theta_s/image_raw" />
+        <node pkg="theta_s_ros" type="image_converter" name="converter">
+            <remap from="/camera/image_raw" to="$(arg image_raw_topic)" />
+            <remap from="/equirectangular/image_raw" to="equirectangular/image_raw" />
+        </node>
+
+        <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)">
+            <remap from="rgb/camera_info" to="camera/color/camera_info" />
+            <remap from="rgb/image_rect_color" to="camera/color/image_rect_color" />
+            <remap from="depth_registered/image_rect" to="camera/aligned_depth_to_color/image_raw" />
+            <remap from="depth_registered/points" to="camera/depth_registered/points" />
+        </node>
+    </group>
+    <node pkg="nodelet" type="nodelet" name="theta_s_converter"
+            args="load theta_s_ros/image_converter_nodelet /$(arg roomba)/$(arg manager_name)" >
+        <remap from="/camera/image_raw" to="theta_s/image_raw" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="color_detector"
+          args="load color_detector/color_detector_nodelet /$(arg roomba)/$(arg manager_name)" >
+        <remap from="/in" to="equirectangular/image_raw" />
+        <rosparam command="load" file="$(find color_detector_params)/config/config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba1_config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba2_config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba3_config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba4_config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba5_config.yaml" />
+        <rosparam command="load" file="$(find color_detector_params)/config/roomba6_config.yaml" />
+        <param name="USE_COLORS" value="$(arg use_colors)" />
+        <param name="ROOMBA" value="$(arg roomba)" />
+    </node>
+</launch>

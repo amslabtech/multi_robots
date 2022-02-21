@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>image_color_detector</name>
+  <version>0.0.0</version>
+  <description>The image_color_detector package</description>
+
+  <maintainer email="amsl@todo.todo">amsl</maintainer>
+
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>color_detector_msgs</depend>
+  <depend>color_detector_params</depend>
+
+  <export>
+
+  </export>
+</package>

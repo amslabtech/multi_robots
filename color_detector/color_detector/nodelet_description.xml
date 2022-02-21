@@ -1,0 +1,9 @@
+<library path="lib/libcolor_detector">
+    <class name="color_detector/color_detector_nodelet"
+           type="color_detector::ColorDetector"
+           base_class_type="nodelet::Nodelet">
+        <description>
+            color detector nodelet
+        </description>
+    </class>
+</library>
