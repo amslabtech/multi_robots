@@ -1,6 +1,3 @@
-[submodule "theta_s_ros"]
-	path = theta_s_ros
-	url = https://github.com/RenFukatsu/theta_s_ros.git
 [submodule "Roomba"]
 	path = Roomba
 	url = https://github.com/amslabtech/Roomba
