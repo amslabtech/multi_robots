@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_dir" default="$(find roomba_visualizer)/config/amcl.yaml" />
+    <arg name="roomba" default="roomba1" />
+
+    <!-- pole_eliminator -->
+    <node pkg="pole_eliminator" type="pole_eliminator" name="pole_eliminator" >
+        <param name="ROBOT_RADIUS" value="0.15" />
+        <param name="MARGIN" value="20" />
+        <param name="LINEAR_INTERPOLATE_THRESHOLD" value="0.4" />
+    </node>
+
+    <!-- amcl -->
+    <node pkg="amcl" type="amcl" name="amcl" >
+        <!-- parameters -->
+        <rosparam command="load" file="$(arg config_dir)/amcl.yaml" />
+        <rosparam command="load" file="$(arg config_dir)/$(arg roomba)/initial_pose.yaml" />
+
+        <!-- frame_id -->
+        <param name="base_frame_id" value="$(arg roomba)/base_link" />
+        <param name="odom_frame_id" value="$(arg roomba)/odom" />
+
+        <!-- topic name -->
+        <remap from="scan" to="corrected_scan" />
+        <remap from="map" to="map" />
+    </node>
+
+    <!-- roomba_visualizer_node -->
+    <node pkg="roomba_visualizer" type="roomba_visualizer_node" name="roomba_visualizer" >
+        <param name="ROOMBA" value="$(arg roomba)" />
+    </node>
+</launch>
