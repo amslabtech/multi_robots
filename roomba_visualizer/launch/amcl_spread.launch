@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="config_dir" default="$(find roomba_visualizer)/config/amcl.yaml" />
+    <arg name="config_dir" default="$(find roomba_visualizer)/config/" />
     <arg name="roomba" default="roomba1" />
 
     <!-- pole_eliminator -->
