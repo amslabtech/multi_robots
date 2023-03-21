@@ -1,12 +1,12 @@
 [submodule "Roomba"]
     path = Roomba
     url = https://github.com/amslabtech/Roomba
-[submodule "dynamixel-workbench"]
-    path = dynamixel-workbench
-    url = https://github.com/TakuKarasawa/dynamixel-workbench.git
-[submodule "dynamixel-workbench-msgs"]
-    path = dynamixel-workbench-msgs
-    url = https://github.com/TakuKarasawa/dynamixel-workbench-msgs.git
+# [submodule "dynamixel-workbench"]
+    # path = dynamixel-workbench
+    # url = https://github.com/TakuKarasawa/dynamixel-workbench.git
+# [submodule "dynamixel-workbench-msgs"]
+    # path = dynamixel-workbench-msgs
+    # url = https://github.com/TakuKarasawa/dynamixel-workbench-msgs.git
 [submodule "DynamixelSDK"]
     path = DynamixelSDK
     url = https://github.com/ROBOTIS-GIT/DynamixelSDK.git

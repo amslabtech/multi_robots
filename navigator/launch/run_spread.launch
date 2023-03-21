@@ -6,7 +6,7 @@
     <group ns="$(arg roomba)" >
         <!-- dwa_planner -->
         <node pkg="dwa_planner" type="dwa_planner" name="dwa_planner">
-            <rosparam command="load" file="$(find navigator)/config/dwa/karasawa_dwa_param.yaml"/>
+            <rosparam command="load" file="$(find navigator)/config/dwa/dkan_spread_param.yaml"/>
             <param name="ROBOT_FRAME" value="$(arg robot_frame_id)" />
             <remap from="/local_map" to="local_map"/>
             <remap from="/scan" to="corrected_scan"/>

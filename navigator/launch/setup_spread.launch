@@ -4,7 +4,6 @@
     <arg name="goal_dist" default="2.0" />
     <arg name="right_dist" default="0.2" />
     <arg name="map_file" default="$(find roomba_visualizer)/map/map.yaml" />
-    <arg name="wp_dir" default="karasawa" />
 
     <group ns="$(arg roomba)" >
         <!-- map_server -->
@@ -25,7 +24,7 @@
 
         <!-- waypoints_manager_node -->
         <node pkg="navigator" type="waypoints_manager_node" name="waypoint_manager">
-            <rosparam command="load" file="$(find navigator)/config/waypoints/$(arg wp_dir)/$(arg roomba)_karasawa.yaml" />
+            <rosparam command="load" file="$(find navigator)/config/waypoints/dkan_spread/$(arg roomba).yaml" />
             <param name="GOAL_THRESHOLD" value="$(arg goal_dist)" />
             <param name="RIGHT_DISTANCE" value="$(arg right_dist)" />
         </node>
