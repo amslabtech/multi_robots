@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="mode" default="reader" />
+
+    <!-- dynamixel_tester -->
+    <node pkg="roomba_dynamixel_controller" type="dynamixel_tester" name="dynamixel_tester" output="screen" >
+        <!-- remap -->
+        <remap from="joint_in"  to="dynamixel_workbench/joint_states" />
+        <remap from="joint_out" to="dynamixel_workbench/joint_trajectory" />
+        
+        <!-- params -->
+        <param name="HZ"           value="10" />
+        <param name="TARGET_ANGLE" value="0.5" />
+        <param name="MODE"         value="$(arg mode)" />
+    </node>
+
+</launch>

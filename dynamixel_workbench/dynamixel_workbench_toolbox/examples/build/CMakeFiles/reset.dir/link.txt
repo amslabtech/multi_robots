@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/reset.dir/src/g_Reset.cpp.o  -o reset  -L/usr/local/lib -Wl,-rpath,/usr/local/lib libdynamixel_workbench.a -ldxl_x64_cpp 

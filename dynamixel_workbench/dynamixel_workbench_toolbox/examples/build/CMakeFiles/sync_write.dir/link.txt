@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/sync_write.dir/src/l_Sync_Write.cpp.o  -o sync_write  -L/usr/local/lib -Wl,-rpath,/usr/local/lib libdynamixel_workbench.a -ldxl_x64_cpp 

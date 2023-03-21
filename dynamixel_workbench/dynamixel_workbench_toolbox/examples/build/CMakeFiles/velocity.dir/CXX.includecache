@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../../include/dynamixel_workbench_toolbox/dynamixel_driver.h
+dynamixel_tool.h
+../../include/dynamixel_workbench_toolbox/dynamixel_tool.h
+Arduino.h
+-
+DynamixelSDK.h
+-
+unistd.h
+../../include/dynamixel_workbench_toolbox/unistd.h
+dynamixel_sdk/dynamixel_sdk.h
+../../include/dynamixel_workbench_toolbox/dynamixel_sdk/dynamixel_sdk.h
+
+../../include/dynamixel_workbench_toolbox/dynamixel_item.h
+stdint.h
+-
+stddef.h
+-
+
+../../include/dynamixel_workbench_toolbox/dynamixel_tool.h
+string.h
+-
+stdio.h
+-
+dynamixel_item.h
+../../include/dynamixel_workbench_toolbox/dynamixel_item.h
+
+../../include/dynamixel_workbench_toolbox/dynamixel_workbench.h
+dynamixel_driver.h
+../../include/dynamixel_workbench_toolbox/dynamixel_driver.h
+
+../../src/DynamixelWorkbench.h
+../include/dynamixel_workbench_toolbox/dynamixel_workbench.h
+../../include/dynamixel_workbench_toolbox/dynamixel_workbench.h
+
+/home/amsl/ros_catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/examples/src/i_Velocity.cpp
+DynamixelWorkbench.h
+-
+

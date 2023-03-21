@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/model_scan.dir/src/a_Model_Scan.cpp.o  -o model_scan  -L/usr/local/lib -Wl,-rpath,/usr/local/lib libdynamixel_workbench.a -ldxl_x64_cpp 

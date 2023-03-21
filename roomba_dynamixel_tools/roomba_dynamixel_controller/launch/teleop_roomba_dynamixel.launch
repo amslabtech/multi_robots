@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_path" default="$(find roomba_dynamixel_controller)/config" />
+    <arg name="is_tf"       default="true" />   
+
+    <!-- teleop_dynamixel_angle -->
+    <node pkg="roomba_dynamixel_controller" type="teleop_dynamixel_angle" name="teleop_dynamixel_angle" output="screen" />
+    
+    <!-- roomba_dynamixel_controller -->
+    <node pkg="roomba_dynamixel_controller" type="roomba_dynamixel_controller" name="roomab_dynamixel_controller" >
+        <!-- remap -->
+        <remap from="joint_in"  to="dynamixel_workbench/joint_states" />
+        <remap from="angle_in"  to="angle" />
+        <remap from="joint_out" to="dynamixel_workbench/joint_trajectory" />
+
+        <!-- params -->
+        <param name="IS_TF" value="$(arg is_tf)" />
+        <rosparam command="load" file="$(arg config_path)/param/roomba_dynamixel_controller.yaml" />
+    </node>
+</launch>
